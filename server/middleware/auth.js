@@ -1,37 +1,45 @@
 // middleware/auth.js
 
 import jwt from 'jsonwebtoken';
+import User from '../models/User.js'; // <-- 1. IMPORT THE USER MODEL
 
 export const protect = async (req, res, next) => {
   let token;
 
-  // 1. Check for token in the 'Authorization' header
-  // The header should be in the format: "Bearer <token>"
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
-      // 2. Get token from header
+      // Get token from header
       token = req.headers.authorization.split(' ')[1];
 
-      // 3. Verify token
+      // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // 4. Attach user payload to the request object
-      // In a real app, you might fetch the full user from the DB here
-      // For now, we just attach the user ID from the token
-      req.user = decoded.user;
+      // 2. FETCH THE FULL USER FROM THE DATABASE
+      // The decoded token contains the user's ID. We use it to find the user.
+      // .select('-password') ensures the password field is not returned.
+      req.user = await User.findById(decoded.user.id).select('-password');
 
-      next(); // Proceed to the next middleware or route handler
+      if (!req.user) {
+        return res.status(401).json({ msg: 'User not found' });
+      }
+
+      next();
     } catch (error) {
       console.error(error);
       res.status(401).json({ msg: 'Token is not valid' });
     }
   }
 
-  // 5. If no token is found
   if (!token) {
     return res.status(401).json({ msg: 'No token, authorization denied' });
+  }
+};
+
+export const admin = (req, res, next) => {
+  // This will now work correctly because req.user contains the full user object
+  if (req.user && req.user.role === 'admin') {
+    next();
+  } else {
+    res.status(403).json({ msg: 'Access denied. Admin role required.' });
   }
 };

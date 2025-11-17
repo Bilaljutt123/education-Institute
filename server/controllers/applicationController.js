@@ -69,3 +69,23 @@ export const updateApplicationStatus = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+
+// @desc    Get the logged-in student's own application
+// @route   GET /api/applications/me
+// @access  Private (Student)
+export const getMyApplication = async (req, res) => {
+  try {
+    // Find the application where the 'student' field matches the logged-in user's ID
+    const application = await Application.findOne({ student: req.user.id });
+
+    if (!application) {
+      // If no application is found, send a 404 with a clear message
+      return res.status(404).json({ msg: 'You have not submitted an application yet.' });
+    }
+
+    res.status(200).json({ success: true, data: application });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};

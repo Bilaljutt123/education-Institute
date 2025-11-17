@@ -1,9 +1,10 @@
 // routes/user.js
 
 import express from 'express';
+import { protect, admin } from '../middleware/auth.js';
+import User from '../models/User.js'; // <-- MOVE THE IMPORT HERE
+
 const router = express.Router();
-import { protect } from '../middleware/auth.js'; // We'll also need the admin middleware
-import { protect, admin } from '../middleware/auth.js'; // Make sure to import admin
 
 // @desc    Get logged-in user's data
 // @route   GET /api/users/me
@@ -21,7 +22,7 @@ router.get('/me', protect, (req, res) => {
 // @access  Private (Admin only)
 router.get('/students', protect, admin, async (req, res) => {
   try {
-    const students = await User.find({ role: 'student' }).select('-password'); // Find all users with the role 'student' and exclude their password
+    const students = await User.find({ role: 'student' }).select('-password');
 
     res.status(200).json({
       success: true,

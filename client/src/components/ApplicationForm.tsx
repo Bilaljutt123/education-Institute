@@ -1,6 +1,6 @@
 // src/components/ApplicationForm.tsx
 
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, type ChangeEvent, type FormEvent,  } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Button } from './ui/button';

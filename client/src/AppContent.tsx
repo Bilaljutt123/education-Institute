@@ -9,24 +9,27 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import ApplicationForm from './components/ApplicationForm';
+import Layout from './components/Layout';
 
 function AppContent() {
   const { user } = useAuth(); // <-- This is now INSIDE the provider
 
   return (
     <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/" element={<Navigate to="/login" />} />
+      <Layout>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/" element={<Navigate to="/login" />} />
 
-        {/* Private Routes */}
-        <Route element={<PrivateRoute />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/apply" element={<ApplicationForm />} />
-        </Route>
-      </Routes>
+          {/* Private Routes */}
+          <Route element={<PrivateRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/apply" element={<ApplicationForm />} />
+          </Route>
+        </Routes>
+      </Layout>
     </Router>
   );
 }

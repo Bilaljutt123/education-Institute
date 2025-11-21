@@ -23,8 +23,12 @@ const Dashboard = () => {
         try {
           const res = await getMyApplication(); // <-- USE THE TYPED FUNCTION
           setApplication(res.data);
-        } catch (err) {
-          console.error('Could not fetch application:', err);
+        } catch (err: any) {
+          if (err.response && err.response.status === 404) {
+            setApplication(null);
+          } else {
+            console.error('Could not fetch application:', err);
+          }
         }
       };
 

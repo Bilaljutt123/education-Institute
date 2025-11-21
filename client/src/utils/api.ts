@@ -51,5 +51,18 @@ export const submitApplication = async (
   return response.data;
 };
 
+export const getApplications = async (): Promise<ApiResponse<Application[]>> => {
+  const response = await api.get<ApiResponse<Application[]>>('/applications');
+  return response.data;
+};
+
+export const updateApplicationStatus = async (
+  id: string,
+  data: { status: 'accepted' | 'rejected' }
+): Promise<ApiResponse<Application>> => {
+  const response = await api.put<ApiResponse<Application>>(`/applications/${id}`, data);
+  return response.data;
+};
+
 // Named export for axios instance
 export { api };

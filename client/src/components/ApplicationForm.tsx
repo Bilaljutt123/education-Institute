@@ -1,13 +1,13 @@
 // src/components/ApplicationForm.tsx
 
-import React, { useState, type ChangeEvent, type FormEvent,  } from 'react';
+import React, { useEffect, useState, type ChangeEvent, type FormEvent,  } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { useAuth } from '@/context/AuthContext';
+import { getMyApplication, getCourses, submitApplication } from '@/utils/api';
 
 // Type for the form data
 interface ApplicationFormData {
@@ -33,12 +33,13 @@ const ApplicationForm = () => {
       previousEducation: '',
       desiredCourse: '',
     });
+     const [courses, setCourses] = useState<any[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const { firstName, lastName, email, phone, dateOfBirth, previousEducation, desiredCourse } = formData;
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -48,7 +49,7 @@ const ApplicationForm = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post('/api/applications', formData);
+      await submitApplication(formData);
       navigate('/dashboard'); // Redirect back to dashboard to see the new application
     } catch (err: any) {
       setError(
@@ -58,6 +59,35 @@ const ApplicationForm = () => {
       setLoading(false);
     }
   };
+   useEffect(() => {
+    if (user) {
+      const fetchMyApplication = async () => {
+        try {
+          const res = await getMyApplication();
+          if (res.data) {
+             navigate('/dashboard');
+          }
+        } catch (err: any) {
+           if (err.response && err.response.status !== 404) {
+             console.error('Error checking application:', err);
+           }
+        }
+      };
+
+      // Add a new effect to fetch courses
+      const fetchCourses = async () => {
+        try {
+          const res = await getCourses(); // <-- CALL THE NEW API ENDPOINT
+          setCourses(res.data); // <-- SET THE STATE WITH THE FETCHED DATA
+        } catch (err) {
+          console.error('Could not fetch courses:', err);
+        }
+      };
+
+      fetchMyApplication();
+      fetchCourses(); // <-- CALL THE NEW FUNCTION
+    }
+  }, [user, navigate]);
 
   return (
     <div className="container mx-auto p-4">
@@ -79,21 +109,44 @@ const ApplicationForm = () => {
             </div>
             {/* ... add other fields for email, phone, etc. */}
             <div className="space-y-2">
-              <Label htmlFor="desiredCourse">Desired Course</Label>
-              <select
-                id="desiredCourse"
-                name="desiredCourse"
-                value={desiredCourse}
-                onChange={onChange}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                required
-              >
-                <option value="">Select a course</option>
-                <option value="Introduction to React">Introduction to React</option>
-                <option value="Node.js & Express Backend Development">Node.js & Express Backend Development</option>
-                <option value="Python for Data Science">Python for Data Science</option>
-              </select>
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" name="email" type="email" value={email} onChange={onChange} required />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input id="phone" name="phone" type="tel" value={phone} onChange={onChange} required />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="dateOfBirth">Date of Birth</Label>
+              <Input id="dateOfBirth" name="dateOfBirth" type="date" value={dateOfBirth} onChange={onChange} required />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="previousEducation">Previous Education</Label>
+              <Input id="previousEducation" name="previousEducation" value={previousEducation} onChange={onChange} required placeholder="e.g. High School, Bachelor's" />
+            </div>
+             <div className="space-y-2">
+      <Label htmlFor="desiredCourse">Desired Course</Label>
+      <select
+        id="desiredCourse"
+        name="desiredCourse"
+        value={desiredCourse} // <-- VALUE IS NOW CONTROLLED BY STATE
+        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+        onChange={onChange}
+        required
+      >
+        <option value="">Select a course</option>
+        {/* Map over the 'courses' state to populate the dropdown */}
+        {courses.length > 0 ? (
+          courses.map((course: any) => (
+            <option key={course._id} value={course.title}>
+              {course.title}
+            </option>
+          ))
+        ) : (
+          <option value="" disabled>Loading courses...</option> // <-- Show a loading option while fetching
+        )}
+      </select>
+    </div>
             {error && <p className="text-sm text-red-600">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Submitting...' : 'Submit Application'}

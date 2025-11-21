@@ -10,6 +10,7 @@ import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import ApplicationForm from './components/ApplicationForm';
 import Layout from './components/Layout';
+import ApplicationsTable from './components/ApplicationsTable';
 
 function AppContent() {
   const { user } = useAuth(); // <-- This is now INSIDE the provider
@@ -27,6 +28,7 @@ function AppContent() {
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/apply" element={<ApplicationForm />} />
+             <Route path="/manage-applications" element={<ApplicationsTable />} />
           </Route>
         </Routes>
       </Layout>

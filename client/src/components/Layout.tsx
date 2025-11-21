@@ -1,6 +1,8 @@
 // src/components/Layout.tsx
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import Navbar from './Navbar';
 
 interface LayoutProps {
@@ -8,9 +10,17 @@ interface LayoutProps {
 }
 
 const Layout = ({ children }: LayoutProps) => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <>
-      <Navbar />
+      <Navbar onLogout={handleLogout} />
       <main className="p-4">
         {children}
       </main>

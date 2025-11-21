@@ -1,54 +1,82 @@
-// src/components/Dashboard.tsx
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { api, getCourses, getMyApplication } from '@/utils/api';
+import { getMyApplication, getApplications, getCourses } from '@/utils/api';
+import type { Application, Course } from '@/types';
+import ApplicationList from './ApplicationList';
+import CourseCard from './CourseCard';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const [application, setApplication] = useState<any>(null);
-  const [courses, setCourses] = useState<any>([]);
+  const [application, setApplication] = useState<Application | null>(null);
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [coursesLoading, setCoursesLoading] = useState<boolean>(true);
+  const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  
   useEffect(() => {
     if (!user) return;
 
-    const fetchMyApplication = async () => {
+    const loadDashboard = async () => {
+      setLoading(true);
+
       try {
-        const res = await getMyApplication();
-        setApplication(res.data);
-      } catch (err: any) {
-        if (err.response?.status === 404) {
-          setApplication(null);
-        } else {
-          console.error('Could not fetch application:', err);
+        // ============================
+        // STUDENT LOGIC
+        // ============================
+        if (user.role === 'student') {
+          // Fetch student's application
+          try {
+            const res = await getMyApplication();
+            setApplication(res.data);
+          } catch (err: any) {
+            if (err.response?.status !== 404) {
+              console.error('Error fetching application:', err);
+            }
+          }
+
+          // Fetch available courses
+          try {
+            const coursesRes = await getCourses();
+            setCourses(coursesRes.data);
+          } catch (err) {
+            console.error('Error fetching courses:', err);
+          } finally {
+            setCoursesLoading(false);
+          }
         }
-      }
-    };
 
-    const fetchCourses = async () => {
-      try {
-        const res = await getCourses();
-        setCourses(res.data);
+        // ============================
+        // ADMIN LOGIC
+        // ============================
+        if (user.role === 'admin') {
+          const res = await getApplications();
+          setApplications(res.data);
+        }
+
       } catch (err) {
-        console.error('Could not fetch courses:', err);
+        console.error("Dashboard load error:", err);
       } finally {
-        setCoursesLoading(false);
+        setLoading(false);
       }
     };
 
-    fetchMyApplication();
-    fetchCourses();
+    loadDashboard();
   }, [user]);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
+  // const handleLogout = () => {
+  //   logout();
+  //   navigate('/login');
+  // };
+    const handleCourseClick = (course: Course) => {
+    setSelectedCourse(course);
+    setIsModalOpen(true);
   };
 
   if (!user) return <div>Loading user information...</div>;
@@ -56,27 +84,30 @@ const Dashboard = () => {
   return (
     <div className="container mx-auto p-4">
 
-      {/* TOP SECTION */}
+      {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <Button onClick={handleLogout}>Logout</Button>
+       
       </div>
 
+      {/* =============================== */}
       {/* STUDENT VIEW */}
+      {/* =============================== */}
       {user.role === 'student' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-          {/* --- My Application Card --- */}
+          {/* My Application */}
           <Card>
             <CardHeader>
               <CardTitle>My Application</CardTitle>
               <CardDescription>
-                Check the status of your application or submit a new one.
+                View the current status of your submitted application.
               </CardDescription>
             </CardHeader>
-
             <CardContent>
-              {application ? (
+              {loading ? (
+                <p>Loading your application...</p>
+              ) : application ? (
                 <div>
                   <p><strong>Status:</strong> {application.status}</p>
                   <p><strong>Desired Course:</strong> {application.desiredCourse}</p>
@@ -91,27 +122,42 @@ const Dashboard = () => {
               )}
             </CardContent>
           </Card>
-
-          {/* --- Available Courses Card --- */}
+           {/* --- Available Courses --- */}
           <Card>
             <CardHeader>
               <CardTitle>Available Courses</CardTitle>
               <CardDescription>
-                See all courses offered by the institute.
+                See all courses offered by the institute. Click on a course to see more details.
               </CardDescription>
             </CardHeader>
-
             <CardContent>
               {coursesLoading ? (
                 <p>Loading courses...</p>
               ) : courses.length > 0 ? (
-                <ul>
+                <div className="space-y-3">
                   {courses.map((course: any) => (
-                    <li key={course._id} className="mb-2">
-                      {course.title} — ${course.tuition}
-                    </li>
+                    <Link 
+                      key={course._id} 
+                      to={`/courses/${course._id}`}
+                      className="block"
+                    >
+                      <div 
+                        className="p-3 border rounded-lg hover:bg-gray-50 hover:shadow-md transition-all cursor-pointer"
+                      >
+                        <h3 className="font-semibold text-lg">{course.title}</h3>
+                        <p className="text-sm text-gray-600 mt-1 line-clamp-2">{course.description}</p>
+                        <div className="flex justify-between items-center mt-2">
+                          <span className="text-sm text-gray-500">
+                            Duration: {course.duration}
+                          </span>
+                          <span className="font-semibold text-green-600">
+                            ${course.tuition}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
                   ))}
-                </ul>
+                </div>
               ) : (
                 <p>No courses available at the moment.</p>
               )}
@@ -120,6 +166,24 @@ const Dashboard = () => {
 
         </div>
       )}
+
+      {/* =============================== */}
+      {/* ADMIN VIEW */}
+      {/* =============================== */}
+      {user.role === 'admin' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>All Student Applications</CardTitle>
+            <CardDescription>
+              Review and manage all applications submitted by students.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ApplicationList applications={applications} />
+          </CardContent>
+        </Card>
+      )}
+
     </div>
   );
 };

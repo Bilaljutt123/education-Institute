@@ -3,47 +3,46 @@
 import mongoose from 'mongoose';
 
 const ApplicationSchema = new mongoose.Schema({
-  // Link to the user who submitted the application
   student: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: [true],
   },
-  // Personal Information
   firstName: {
     type: String,
-    required: [true, 'Please add a first name'],
+    required: [true],
   },
   lastName: {
     type: String,
-    required: [true, 'Please add a last name'],
+    required: [true],
   },
   email: {
     type: String,
-    required: [true, 'Please add an email'],
-    match: [
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-      'Please add a valid email',
-    ],
+    required: [true],
+    unique: true,
   },
   phone: {
     type: String,
-    required: [true, 'Please add a phone number'],
+    required: [true],
   },
-  // Academic Information
   dateOfBirth: {
     type: Date,
-    required: [true, 'Please add a date of birth'],
+    required: [true],
   },
   previousEducation: {
     type: String,
-    required: [true, 'Please add your previous education'],
+    required: [true],
   },
   desiredCourse: {
     type: String,
-    required: [true, 'Please add your desired course'],
+    required: [true],
   },
-  // Application Status
+  // Change this from a single string to an array of objects
+  courses: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Course',
+    required: [true],
+  }],
   status: {
     type: String,
     enum: ['pending', 'accepted', 'rejected'],

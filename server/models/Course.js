@@ -11,16 +11,30 @@ const CourseSchema = new mongoose.Schema({
   description: {
     type: String,
     required: [true, 'Please add a course description'],
+    trim: true,
   },
   duration: {
-    type: String, // e.g., "3 Months", "6 Weeks"
+    type: String,
     required: [true, 'Please add a course duration'],
   },
   tuition: {
     type: Number,
     required: [true, 'Please add a tuition fee'],
   },
-  // You could add more fields like instructor, schedule, etc.
+  instructor: {
+    type: String,
+    trim: true,
+  },
+  schedule: {
+    startDate: {
+      type: Date,
+      required: [true, 'Please add a start date'],
+    },
+    endDate: {
+      type: Date,
+      required: [true, 'Please add an end date'],
+    },
+  },
   createdAt: {
     type: Date,
     default: Date.now,

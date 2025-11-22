@@ -1,6 +1,6 @@
 // src/components/Register.tsx
 
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, type ChangeEvent, type FormEvent,  } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
@@ -111,7 +111,7 @@ const Register = () => {
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <option value="student">Student</option>
-                <option value="admin">Admin</option>
+                {/* <option value="admin">Admin</option> */}
               </select>
             </div>
             {error && <p className="text-sm text-red-600">{error}</p>}

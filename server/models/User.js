@@ -1,7 +1,7 @@
 // models/User.js
 
 import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs'; // Import bcrypt
+import bcrypt from 'bcryptjs';
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -28,6 +28,32 @@ const UserSchema = new mongoose.Schema({
     enum: ['student', 'admin'],
     default: 'student',
   },
+  // Student Profile Fields
+  phone: {
+    type: String,
+  },
+  dateOfBirth: {
+    type: Date,
+  },
+  address: {
+    street: String,
+    city: String,
+    state: String,
+    zipCode: String,
+    country: String,
+  },
+  previousEducation: {
+    type: String,
+  },
+  emergencyContact: {
+    name: String,
+    relationship: String,
+    phone: String,
+  },
+  profileCompleted: {
+    type: Boolean,
+    default: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -44,4 +70,4 @@ UserSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-export default mongoose.model('User', UserSchema); // Use export default
+export default mongoose.model('User', UserSchema);

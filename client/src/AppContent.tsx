@@ -14,9 +14,10 @@ import ApplicationsTable from './components/ApplicationsTable';
 import ManageCourses from './components/ManageCourses';
 import CreateCourse from './components/CreateCourse';
 import CourseDetail from './components/CourseDetail';
+import StudentProfile from './components/StudentProfile';
 
 function AppContent() {
-  const { user } = useAuth(); // <-- This is now INSIDE the provider
+  const { user } = useAuth();
 
   return (
     <Router>
@@ -30,11 +31,12 @@ function AppContent() {
           {/* Private Routes */}
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<StudentProfile />} />
             <Route path="/apply" element={<ApplicationForm />} />
-             <Route path="/manage-applications" element={<ApplicationsTable />} />
-              <Route path="/manage-courses" element={<ManageCourses />} />
-              <Route path="/create-course" element={<CreateCourse />} />
-              <Route path="/courses/:id" element={<CourseDetail />} />
+            <Route path="/manage-applications" element={<ApplicationsTable />} />
+            <Route path="/manage-courses" element={<ManageCourses />} />
+            <Route path="/create-course" element={<CreateCourse />} />
+            <Route path="/courses/:id" element={<CourseDetail />} />
           </Route>
         </Routes>
       </Layout>

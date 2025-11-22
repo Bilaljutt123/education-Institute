@@ -19,7 +19,7 @@ const ApplicationSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true],
-    unique: true,
+    // REMOVED unique: true to allow multiple applications per student
   },
   phone: {
     type: String,
@@ -37,12 +37,6 @@ const ApplicationSchema = new mongoose.Schema({
     type: String,
     required: [true],
   },
-  // Change this from a single string to an array of objects
-  courses: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Course',
-    required: [true],
-  }],
   status: {
     type: String,
     enum: ['pending', 'accepted', 'rejected'],

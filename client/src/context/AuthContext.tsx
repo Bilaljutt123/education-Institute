@@ -1,16 +1,10 @@
 // src/context/AuthContext.tsx
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { getMe } from '@/utils/api'; // ✅ import the typed API function
+import React, { createContext, useContext, useEffect, useState, type ReactNode,  } from 'react';
+import { getMe } from '@/utils/api';
+import type { User } from '@/types';
 
 // --- TYPES ---
-
-export interface User {
-  _id: string;
-  name: string;
-  email: string;
-  role: 'student' | 'admin';
-}
 
 interface AuthContextType {
   token: string | null;
@@ -18,6 +12,7 @@ interface AuthContextType {
   loading: boolean;
   login: (token: string) => void;
   logout: () => void;
+  setUser: (user: User | null) => void;
 }
 
 // --- CONTEXT ---
@@ -67,7 +62,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [token]);
 
   return (
-    <AuthContext.Provider value={{ token, user, loading, login, logout }}>
+    <AuthContext.Provider value={{ token, user, loading, login, logout, setUser }}>
       {children}
     </AuthContext.Provider>
   );

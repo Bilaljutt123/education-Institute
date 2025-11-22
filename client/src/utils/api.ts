@@ -39,6 +39,12 @@ export const getMyApplication:any = async () => {
   return response.data;
 };
 
+// Get all applications for the logged-in student
+export const getMyApplications = async (): Promise<ApiResponse<Application[]>> => {
+  const response = await api.get<ApiResponse<Application[]>>('/applications/my-applications');
+  return response.data;
+};
+
 export const getCourses = async (): Promise<ApiResponse<Course[]>> => {
   const response = await api.get<ApiResponse<Course[]>>('/courses');
   return response.data;

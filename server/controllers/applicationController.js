@@ -15,11 +15,11 @@ export const submitApplication = async (req, res) => {
       return res.status(401).json({ msg: 'User not found' });
     }
 
-    // Check if the user has already submitted an application
-    const existingApplication = await Application.findOne({ student: req.user.id });
-    if (existingApplication) {
-      return res.status(400).json({ msg: 'You have already submitted an application' });
-    }
+    // REMOVED: Check for existing application - now students can submit multiple applications
+    // const existingApplication = await Application.findOne({ student: req.user.id });
+    // if (existingApplication) {
+    //   return res.status(400).json({ msg: 'You have already submitted an application' });
+    // }
 
     const applicationData = { ...req.body, student: req.user.id };
     const application = new Application(applicationData);
@@ -70,20 +70,16 @@ export const updateApplicationStatus = async (req, res) => {
   }
 };
 
-// @desc    Get the logged-in student's own application
-// @route   GET /api/applications/me
+// @desc    Get ALL applications for the logged-in student
+// @route   GET /api/applications/me OR /api/applications/my-applications
 // @access  Private (Student)
 export const getMyApplication = async (req, res) => {
   try {
-    // Find the application where the 'student' field matches the logged-in user's ID
-    const application = await Application.findOne({ student: req.user.id });
+    // Find ALL applications where the 'student' field matches the logged-in user's ID
+    const applications = await Application.find({ student: req.user.id }).sort({ createdAt: -1 });
 
-    if (!application) {
-      // If no application is found, send a 404 with a clear message
-      return res.status(404).json({ msg: 'You have not submitted an application yet.' });
-    }
-
-    res.status(200).json({ success: true, data: application });
+    // Return empty array if no applications found (instead of 404)
+    res.status(200).json({ success: true, data: applications });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

@@ -10,6 +10,9 @@ import { protect, admin } from '../middleware/auth.js';
 // This route must come before /:id, otherwise Express will treat 'me' as an ID
 router.get('/me', protect, getMyApplication);
 
+// Route for getting ALL applications for the logged-in student
+router.get('/my-applications', protect, getMyApplication);
+
 // Route for submitting an application (only for logged-in students)
 router.post('/', protect, submitApplication);
 

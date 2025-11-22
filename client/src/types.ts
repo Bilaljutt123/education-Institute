@@ -6,6 +6,22 @@ export interface User {
   name: string;
   email: string;
   role: 'student' | 'admin';
+  phone?: string;
+  dateOfBirth?: string;
+  address?: {
+    street?: string;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+    country?: string;
+  };
+  previousEducation?: string;
+  emergencyContact?: {
+    name?: string;
+    relationship?: string;
+    phone?: string;
+  };
+  profileCompleted?: boolean;
 }
 
 // Type for an Application object

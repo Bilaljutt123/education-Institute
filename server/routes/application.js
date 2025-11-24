@@ -3,7 +3,7 @@
 import express from 'express';
 const router = express.Router();
 // 1. Import the new getMyApplication function
-import { submitApplication, getApplications, updateApplicationStatus, getMyApplication } from '../controllers/applicationController.js';
+import { submitApplication, getApplications, updateApplicationStatus, getMyApplication, deleteApplication } from '../controllers/applicationController.js';
 import { protect, admin } from '../middleware/auth.js';
 
 // 2. Add the new route for getting the logged-in user's own application
@@ -19,5 +19,6 @@ router.post('/', protect, submitApplication);
 // Routes for viewing and updating applications (for admins only)
 router.get('/', protect, admin, getApplications);
 router.put('/:id', protect, admin, updateApplicationStatus);
+router.delete('/:id', protect, admin, deleteApplication);
 
 export default router;

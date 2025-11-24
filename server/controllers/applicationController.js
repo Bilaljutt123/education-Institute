@@ -85,3 +85,23 @@ export const getMyApplication = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+
+// @desc    Delete an application
+// @route   DELETE /api/applications/:id
+// @access  Private (Admin only)
+export const deleteApplication = async (req, res) => {
+  try {
+    const application = await Application.findById(req.params.id);
+
+    if (!application) {
+      return res.status(404).json({ msg: 'Application not found' });
+    }
+
+    await Application.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({ success: true, data: {} });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};

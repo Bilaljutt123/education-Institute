@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { CheckCircle, XCircle, Clock, Filter } from 'lucide-react';
-import { getApplicationsWithDetails, updateApplicationStatus } from '@/utils/api';
+import { CheckCircle, XCircle, Clock, Filter, Trash2 } from 'lucide-react';
+import { getApplicationsWithDetails, updateApplicationStatus, deleteApplication } from '@/utils/api';
 import type { ApplicationWithDetails } from '@/types';
 
 type FilterStatus = 'pending' | 'accepted' | 'rejected';
@@ -40,6 +40,17 @@ const ApplicationsTable = () => {
       ));
     } catch (err: any) {
       setError(err.response?.data?.msg || 'Failed to update status');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this application?')) return;
+
+    try {
+      await deleteApplication(id);
+      setApplications(applications.filter(app => app._id !== id));
+    } catch (err: any) {
+      setError(err.response?.data?.msg || 'Failed to delete application');
     }
   };
 
@@ -162,9 +173,7 @@ const ApplicationsTable = () => {
                     <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Course</th>
                     <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Status</th>
                     <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Applied On</th>
-                    {activeFilter === 'pending' && (
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Actions</th>
-                    )}
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
@@ -181,26 +190,36 @@ const ApplicationsTable = () => {
                           day: 'numeric',
                         })}
                       </td>
-                      {activeFilter === 'pending' && (
-                        <td className="px-6 py-4">
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => updateStatus(application._id, 'accepted')}
-                              className="px-4 py-2 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-green-500/50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
-                            >
-                              <CheckCircle className="w-4 h-4" />
-                              Accept
-                            </button>
-                            <button
-                              onClick={() => updateStatus(application._id, 'rejected')}
-                              className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-red-500/50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
-                            >
-                              <XCircle className="w-4 h-4" />
-                              Reject
-                            </button>
-                          </div>
-                        </td>
-                      )}
+                      <td className="px-6 py-4">
+                        <div className="flex gap-2">
+                          {application.status === 'pending' && (
+                            <>
+                              <button
+                                onClick={() => updateStatus(application._id, 'accepted')}
+                                className="px-4 py-2 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-green-500/50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
+                              >
+                                <CheckCircle className="w-4 h-4" />
+                                Accept
+                              </button>
+                              <button
+                                onClick={() => updateStatus(application._id, 'rejected')}
+                                className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-red-500/50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
+                              >
+                                <XCircle className="w-4 h-4" />
+                                Reject
+                              </button>
+                            </>
+                          )}
+                          <button
+                            onClick={() => handleDelete(application._id)}
+                            className="px-4 py-2 bg-gradient-to-r from-gray-600 to-gray-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-gray-500/50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
+                            title="Delete Application"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            {application.status !== 'pending' && 'Delete'}
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

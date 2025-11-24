@@ -75,5 +75,10 @@ export const updateApplicationStatus = async (
   return response.data;
 };
 
+export const deleteApplication = async (id: string): Promise<ApiResponse<void>> => {
+  const response = await api.delete<ApiResponse<void>>(`/applications/${id}`);
+  return response.data;
+};
+
 // Named export for axios instance
 export { api };

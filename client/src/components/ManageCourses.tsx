@@ -125,7 +125,9 @@ const ManageCourses = () => {
                 {/* Delete Confirmation */}
                 {deleteConfirm === course._id && (
                   <div className="mt-4 p-4 bg-red-500/20 border border-red-500/50 rounded-xl">
-                    <p className="text-red-200 text-sm mb-3">Delete this course?</p>
+                    <p className="text-red-200 text-sm mb-3">
+                      Delete this course? This will also remove all <strong>students and applications</strong> associated with it.
+                    </p>
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleDelete(course._id)}

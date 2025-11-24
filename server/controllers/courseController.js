@@ -1,6 +1,7 @@
 // controllers/courseController.js
 
 import Course from '../models/Course.js';
+import Application from '../models/Application.js';
 
 // @desc    Create a new course
 // @route   POST /api/courses
@@ -70,11 +71,18 @@ export const updateCourse = async (req, res) => {
 // @access  Private (Admin only)
 export const deleteCourse = async (req, res) => {
   try {
-    const course = await Course.findByIdAndDelete(req.params.id);
+    const course = await Course.findById(req.params.id);
 
     if (!course) {
       return res.status(404).json({ msg: 'Course not found' });
     }
+
+    // Delete the course
+    await Course.findByIdAndDelete(req.params.id);
+
+    // Delete all applications associated with this course
+    // Note: Applications store the course title in 'desiredCourse'
+    await Application.deleteMany({ desiredCourse: course.title });
 
     res.status(200).json({ success: true, data: {} }); // Or send a success message
   } catch (err) {

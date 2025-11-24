@@ -1,11 +1,8 @@
-import { useState, type FormEvent,  } from 'react';
+import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Button } from './ui/button';
-import { Label } from './ui/label';
-import { Input } from './ui/input';
 import { api } from '@/utils/api';
+import { User, MapPin, Phone, GraduationCap, Save, ArrowLeft } from 'lucide-react';
 
 interface StudentProfileFormData {
   phone: string;
@@ -29,8 +26,6 @@ const StudentProfile = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  if (!user) return <div>Loading...</div>;
-
   const [formData, setFormData] = useState<StudentProfileFormData>({
     phone: user?.phone || '',
     dateOfBirth: user?.dateOfBirth ? user.dateOfBirth.split('T')[0] : '',
@@ -44,6 +39,15 @@ const StudentProfile = () => {
     emergencyContactRelationship: user?.emergencyContact?.relationship || '',
     emergencyContactPhone: user?.emergencyContact?.phone || '',
   });
+
+  if (!user) return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="text-center">
+        <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-white text-lg">Loading profile...</p>
+      </div>
+    </div>
+  );
 
   const {
     phone,
@@ -59,7 +63,7 @@ const StudentProfile = () => {
     emergencyContactPhone,
   } = formData;
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const onChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -95,70 +99,182 @@ const StudentProfile = () => {
     }
   };
 
+  const inputClasses = "w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300";
+  const labelClasses = "block text-sm font-medium text-purple-200 mb-2";
+
   return (
-    <div className="container mx-auto p-4 max-w-3xl">
-      <Card>
-        <CardHeader>
-          <CardTitle>Complete Your Profile</CardTitle>
-          <CardDescription>
-            Please fill out your profile information before submitting applications. Fields marked with * are required.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={onSubmit} className="space-y-6">
-            {/* Personal Info */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Personal Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-12 px-6">
+      {/* Animated Background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+
+      <div className="relative max-w-4xl mx-auto">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="mb-6 inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-purple-200 rounded-lg hover:bg-white/20 transition-all"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Dashboard
+        </button>
+
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-cyan-200">
+            Complete Your Profile
+          </h1>
+          <p className="text-xl text-purple-200">
+            Please fill out your profile information before submitting applications.
+          </p>
+        </div>
+
+        <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-8">
+          <form onSubmit={onSubmit} className="space-y-8">
+            
+            {/* Personal Information Section */}
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 rounded-xl bg-purple-500/20">
+                  <User className="w-6 h-6 text-purple-400" />
+                </div>
+                <h2 className="text-2xl font-semibold text-white">Personal Information</h2>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Label htmlFor="phone">Phone Number *</Label>
-                  <Input type="tel" id="phone" name="phone" value={phone} onChange={onChange} required />
+                  <label htmlFor="phone" className={labelClasses}>Phone Number *</label>
+                  <input type="tel" id="phone" name="phone" value={phone} onChange={onChange} required className={inputClasses} placeholder="+1 (555) 000-0000" />
                 </div>
                 <div>
-                  <Label htmlFor="dateOfBirth">Date of Birth *</Label>
-                  <Input type="date" id="dateOfBirth" name="dateOfBirth" value={dateOfBirth} onChange={onChange} required />
+                  <label htmlFor="dateOfBirth" className={labelClasses}>Date of Birth *</label>
+                  <input type="date" id="dateOfBirth" name="dateOfBirth" value={dateOfBirth} onChange={onChange} required className={inputClasses} />
                 </div>
               </div>
+            </div>
+
+            {/* Education Section */}
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 rounded-xl bg-cyan-500/20">
+                  <GraduationCap className="w-6 h-6 text-cyan-400" />
+                </div>
+                <h2 className="text-2xl font-semibold text-white">Previous Education</h2>
+              </div>
+              
               <div>
-                <Label htmlFor="previousEducation">Previous Education *</Label>
-                <Input type="text" id="previousEducation" name="previousEducation" value={previousEducation} onChange={onChange} required />
+                <label htmlFor="previousEducation" className={labelClasses}>Highest Qualification *</label>
+                <input type="text" id="previousEducation" name="previousEducation" value={previousEducation} onChange={onChange} required className={inputClasses} placeholder="e.g. High School Diploma, Bachelor's Degree" />
               </div>
             </div>
 
-            {/* Address */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Address (Optional)</h3>
-              <Input type="text" id="street" name="street" value={street} onChange={onChange} placeholder="Street" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input type="text" id="city" name="city" value={city} onChange={onChange} placeholder="City" />
-                <Input type="text" id="state" name="state" value={state} onChange={onChange} placeholder="State" />
+            {/* Address Section */}
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 rounded-xl bg-pink-500/20">
+                  <MapPin className="w-6 h-6 text-pink-400" />
+                </div>
+                <h2 className="text-2xl font-semibold text-white">Address Details</h2>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input type="text" id="zipCode" name="zipCode" value={zipCode} onChange={onChange} placeholder="ZIP" />
-                <Input type="text" id="country" name="country" value={country} onChange={onChange} placeholder="Country" />
+              
+              <div className="space-y-6">
+                <div>
+                  <label htmlFor="street" className={labelClasses}>Street Address</label>
+                  <input type="text" id="street" name="street" value={street} onChange={onChange} className={inputClasses} placeholder="123 Main St" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="city" className={labelClasses}>City</label>
+                    <input type="text" id="city" name="city" value={city} onChange={onChange} className={inputClasses} placeholder="New York" />
+                  </div>
+                  <div>
+                    <label htmlFor="state" className={labelClasses}>State / Province</label>
+                    <input type="text" id="state" name="state" value={state} onChange={onChange} className={inputClasses} placeholder="NY" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="zipCode" className={labelClasses}>ZIP / Postal Code</label>
+                    <input type="text" id="zipCode" name="zipCode" value={zipCode} onChange={onChange} className={inputClasses} placeholder="10001" />
+                  </div>
+                  <div>
+                    <label htmlFor="country" className={labelClasses}>Country</label>
+                    <input type="text" id="country" name="country" value={country} onChange={onChange} className={inputClasses} placeholder="United States" />
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Emergency Contact */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Emergency Contact (Optional)</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input type="text" id="emergencyContactName" name="emergencyContactName" value={emergencyContactName} onChange={onChange} placeholder="Name" />
-                <Input type="text" id="emergencyContactRelationship" name="emergencyContactRelationship" value={emergencyContactRelationship} onChange={onChange} placeholder="Relationship" />
+            {/* Emergency Contact Section */}
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 rounded-xl bg-orange-500/20">
+                  <Phone className="w-6 h-6 text-orange-400" />
+                </div>
+                <h2 className="text-2xl font-semibold text-white">Emergency Contact</h2>
               </div>
-              <Input type="tel" id="emergencyContactPhone" name="emergencyContactPhone" value={emergencyContactPhone} onChange={onChange} placeholder="Phone" />
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="emergencyContactName" className={labelClasses}>Contact Name</label>
+                  <input type="text" id="emergencyContactName" name="emergencyContactName" value={emergencyContactName} onChange={onChange} className={inputClasses} placeholder="Jane Doe" />
+                </div>
+                <div>
+                  <label htmlFor="emergencyContactRelationship" className={labelClasses}>Relationship</label>
+                  <input type="text" id="emergencyContactRelationship" name="emergencyContactRelationship" value={emergencyContactRelationship} onChange={onChange} className={inputClasses} placeholder="Parent, Spouse, etc." />
+                </div>
+                <div className="md:col-span-2">
+                  <label htmlFor="emergencyContactPhone" className={labelClasses}>Contact Phone</label>
+                  <input type="tel" id="emergencyContactPhone" name="emergencyContactPhone" value={emergencyContactPhone} onChange={onChange} className={inputClasses} placeholder="+1 (555) 000-0000" />
+                </div>
+              </div>
             </div>
 
-            {error && <p className="text-sm text-red-600">{error}</p>}
-            {success && <p className="text-sm text-green-600">{success}</p>}
+            {/* Messages */}
+            {error && (
+              <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-xl">
+                <p className="text-red-200">{error}</p>
+              </div>
+            )}
+            {success && (
+              <div className="p-4 bg-green-500/20 border border-green-500/50 rounded-xl">
+                <p className="text-green-200">{success}</p>
+              </div>
+            )}
 
-            <div className="flex gap-4">
-              <Button type="submit" disabled={loading} className="flex-1">{loading ? 'Saving...' : 'Save Profile'}</Button>
-              <Button type="button" variant="outline" onClick={() => navigate('/dashboard')} disabled={loading}>Cancel</Button>
+            {/* Actions */}
+            <div className="flex gap-4 pt-4 border-t border-white/10">
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-1 px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-5 h-5" />
+                    Save Profile
+                  </>
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/dashboard')}
+                disabled={loading}
+                className="px-6 py-4 bg-white/10 text-purple-200 rounded-xl font-semibold text-lg hover:bg-white/20 transition-all duration-300"
+              >
+                Cancel
+              </button>
             </div>
           </form>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,123 +1,246 @@
-// src/components/ApplicationsTable.tsx
+import { useState, useEffect } from 'react';
+import { CheckCircle, XCircle, Clock, Filter } from 'lucide-react';
+import { getApplicationsWithDetails, updateApplicationStatus } from '@/utils/api';
+import type { ApplicationWithDetails } from '@/types';
 
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-// import { Application } from '@/types';
-import { getApplications, updateApplicationStatus } from '@/utils/api';
-import { Button } from './ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import type { Application } from '@/types';
+type FilterStatus = 'pending' | 'accepted' | 'rejected';
 
 const ApplicationsTable = () => {
-  const { user } = useAuth();
-  const [applications, setApplications] = useState<Application[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [applications, setApplications] = useState<ApplicationWithDetails[]>([]);
+  const [filteredApplications, setFilteredApplications] = useState<ApplicationWithDetails[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [activeFilter, setActiveFilter] = useState<FilterStatus>('pending');
 
   useEffect(() => {
-    // Only fetch if user is an admin
-    if (user?.role === 'admin') {
-      const fetchApplications = async () => {
-        try {
-          const res = await getApplications(); // Use the new typed function
-          setApplications(res.data);
-        } catch (err) {
-          console.error('Could not fetch applications:', err);
-        } finally {
-          setLoading(false);
-        }
-      };
+    fetchApplications();
+  }, []);
 
-      fetchApplications();
-    }
-  }, [user]);
+  useEffect(() => {
+    const filtered = applications.filter(app => app.status === activeFilter);
+    setFilteredApplications(filtered);
+  }, [applications, activeFilter]);
 
-  const handleAccept = async (id: string) => {
+  const fetchApplications = async () => {
     try {
-      await updateApplicationStatus(id, { status: 'accepted' });
-      setApplications(prev => prev.map(app => app._id === id ? { ...app, status: 'accepted' } : app));
-    } catch (err) {
-      console.error('Could not accept application:', err);
+      const response = await getApplicationsWithDetails();
+      setApplications(response.data);
+      setLoading(false);
+    } catch (err: any) {
+      setError(err.response?.data?.msg || 'Failed to fetch applications');
+      setLoading(false);
     }
   };
 
-  const handleReject = async (id: string) => {
+  const updateStatus = async (id: string, status: 'accepted' | 'rejected') => {
     try {
-      await updateApplicationStatus(id, { status: 'rejected' });
-      setApplications(prev => prev.map(app => app._id === id ? { ...app, status: 'rejected' } : app));
-    } catch (err) {
-      console.error('Could not reject application:', err);
+      await updateApplicationStatus(id, { status });
+      setApplications(applications.map(app => 
+        app._id === id ? { ...app, status } : app
+      ));
+    } catch (err: any) {
+      setError(err.response?.data?.msg || 'Failed to update status');
     }
+  };
+
+  const getStatusBadge = (status: string) => {
+    const styles = {
+      pending: 'bg-yellow-500/20 text-yellow-200 border-yellow-500/50',
+      accepted: 'bg-green-500/20 text-green-200 border-green-500/50',
+      rejected: 'bg-red-500/20 text-red-200 border-red-500/50',
+    };
+
+    const icons = {
+      pending: <Clock className="w-4 h-4" />,
+      accepted: <CheckCircle className="w-4 h-4" />,
+      rejected: <XCircle className="w-4 h-4" />,
+    };
+
+    return (
+      <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border ${styles[status as keyof typeof styles]} font-medium text-sm`}>
+        {icons[status as keyof typeof icons]}
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </span>
+    );
+  };
+
+  const getFilterButtonClass = (filter: FilterStatus) => {
+    const baseClass = "px-6 py-3 rounded-xl font-semibold transition-all duration-300 inline-flex items-center gap-2";
+    
+    if (activeFilter === filter) {
+      const activeStyles = {
+        pending: 'bg-gradient-to-r from-yellow-600 to-yellow-500 text-white shadow-lg shadow-yellow-500/50',
+        accepted: 'bg-gradient-to-r from-green-600 to-green-500 text-white shadow-lg shadow-green-500/50',
+        rejected: 'bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/50',
+      };
+      return `${baseClass} ${activeStyles[filter]}`;
+    }
+    
+    return `${baseClass} bg-white/10 backdrop-blur-md border border-white/20 text-purple-100 hover:bg-white/20`;
+  };
+
+  const getCount = (status: FilterStatus) => {
+    return applications.filter(app => app.status === status).length;
   };
 
   if (loading) {
-    return <div>Loading applications...</div>;
-  }
-
-  if (!user || user.role !== 'admin') {
-    return <div>Access denied. Admin role required.</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white text-lg">Loading applications...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Manage Applications</CardTitle>
-          <CardDescription>
-            View and manage student applications.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {applications.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Desired Course</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {applications.map((app) => (
-                  <TableRow key={app._id}>
-                    <TableCell>{app.student.name}</TableCell>
-                    <TableCell>{app.student.email}</TableCell>
-                    <TableCell>{app.desiredCourse}</TableCell>
-                    <TableCell>{app.status}</TableCell>
-                    <TableCell>
-                      <Button
-                        onClick={() => handleAccept(app._id)}
-                        className="text-green-600 hover:text-green-800 mr-2"
-                        variant="ghost"
-                      >
-                        Accept
-                      </Button>
-                      <Button
-                        onClick={() => handleReject(app._id)}
-                        className="text-red-600 hover:text-red-800 mr-2"
-                        variant="ghost"
-                      >
-                        Reject
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-12 px-6">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+
+      <div className="relative max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-cyan-200">
+            Manage Applications
+          </h1>
+          <p className="text-xl text-purple-200">Review and manage student applications</p>
+        </div>
+
+        <div className="mb-8 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <Filter className="w-6 h-6 text-purple-300" />
+            <h2 className="text-xl font-semibold text-white">Filter by Status</h2>
+          </div>
+          
+          <div className="flex flex-wrap gap-4">
+            <button onClick={() => setActiveFilter('pending')} className={getFilterButtonClass('pending')}>
+              <Clock className="w-5 h-5" />
+              Pending
+              <span className="ml-2 px-2 py-0.5 bg-white/20 rounded-full text-xs">{getCount('pending')}</span>
+            </button>
+
+            <button onClick={() => setActiveFilter('accepted')} className={getFilterButtonClass('accepted')}>
+              <CheckCircle className="w-5 h-5" />
+              Accepted
+              <span className="ml-2 px-2 py-0.5 bg-white/20 rounded-full text-xs">{getCount('accepted')}</span>
+            </button>
+
+            <button onClick={() => setActiveFilter('rejected')} className={getFilterButtonClass('rejected')}>
+              <XCircle className="w-5 h-5" />
+              Rejected
+              <span className="ml-2 px-2 py-0.5 bg-white/20 rounded-full text-xs">{getCount('rejected')}</span>
+            </button>
+          </div>
+        </div>
+
+        {error && (
+          <div className="mb-6 bg-red-500/20 backdrop-blur-md border border-red-500/50 rounded-xl p-4">
+            <p className="text-red-200">{error}</p>
+          </div>
+        )}
+
+        <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden">
+          {filteredApplications.length === 0 ? (
+            <div className="p-12 text-center">
+              <div className="inline-flex p-6 rounded-full bg-purple-500/20 mb-4">
+                <Filter className="w-12 h-12 text-purple-300" />
+              </div>
+              <h3 className="text-2xl font-semibold text-white mb-2">No {activeFilter} applications</h3>
+              <p className="text-purple-200">There are currently no {activeFilter} applications to display.</p>
+            </div>
           ) : (
-            <p>No applications found.</p>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-white/10">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Student</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Email</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Course</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Applied On</th>
+                    {activeFilter === 'pending' && (
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Actions</th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/10">
+                  {filteredApplications.map((application) => (
+                    <tr key={application._id} className="hover:bg-white/5 transition-colors duration-200">
+                      <td className="px-6 py-4 text-white font-medium">{application.studentName}</td>
+                      <td className="px-6 py-4 text-purple-200">{application.email}</td>
+                      <td className="px-6 py-4 text-purple-200">{application.desiredCourse || application.course?.title || 'N/A'}</td>
+                      <td className="px-6 py-4">{getStatusBadge(application.status)}</td>
+                      <td className="px-6 py-4 text-purple-200">
+                        {new Date(application.createdAt).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                        })}
+                      </td>
+                      {activeFilter === 'pending' && (
+                        <td className="px-6 py-4">
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => updateStatus(application._id, 'accepted')}
+                              className="px-4 py-2 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-green-500/50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
+                            >
+                              <CheckCircle className="w-4 h-4" />
+                              Accept
+                            </button>
+                            <button
+                              onClick={() => updateStatus(application._id, 'rejected')}
+                              className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-red-500/50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
+                            >
+                              <XCircle className="w-4 h-4" />
+                              Reject
+                            </button>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-yellow-500/10 backdrop-blur-md border border-yellow-500/30 rounded-xl p-6">
+            <div className="flex items-center gap-3">
+              <Clock className="w-8 h-8 text-yellow-400" />
+              <div>
+                <p className="text-yellow-200 text-sm">Pending</p>
+                <p className="text-white text-2xl font-bold">{getCount('pending')}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-green-500/10 backdrop-blur-md border border-green-500/30 rounded-xl p-6">
+            <div className="flex items-center gap-3">
+              <CheckCircle className="w-8 h-8 text-green-400" />
+              <div>
+                <p className="text-green-200 text-sm">Accepted</p>
+                <p className="text-white text-2xl font-bold">{getCount('accepted')}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-red-500/10 backdrop-blur-md border border-red-500/30 rounded-xl p-6">
+            <div className="flex items-center gap-3">
+              <XCircle className="w-8 h-8 text-red-400" />
+              <div>
+                <p className="text-red-200 text-sm">Rejected</p>
+                <p className="text-white text-2xl font-bold">{getCount('rejected')}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

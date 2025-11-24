@@ -1,8 +1,6 @@
 // src/AppContent.tsx
 
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute';
 
 import Login from './components/Login';
@@ -15,18 +13,18 @@ import ManageCourses from './components/ManageCourses';
 import CreateCourse from './components/CreateCourse';
 import CourseDetail from './components/CourseDetail';
 import StudentProfile from './components/StudentProfile';
+import LandingPage from './components/LandingPage';
+import MyCourse from './components/MyCourse';
 
 function AppContent() {
-  const { user } = useAuth();
-
   return (
     <Router>
       <Layout>
         <Routes>
           {/* Public Routes */}
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/" element={<Navigate to="/login" />} />
 
           {/* Private Routes */}
           <Route element={<PrivateRoute />}>
@@ -37,6 +35,7 @@ function AppContent() {
             <Route path="/manage-courses" element={<ManageCourses />} />
             <Route path="/create-course" element={<CreateCourse />} />
             <Route path="/courses/:id" element={<CourseDetail />} />
+            <Route path="/my-courses/:courseTitle" element={<MyCourse />} />
           </Route>
         </Routes>
       </Layout>

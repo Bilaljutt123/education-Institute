@@ -1,14 +1,8 @@
-// src/components/CreateCourse.tsx
-
-import React, { useState, type ChangeEvent, type FormEvent } from 'react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { api } from '@/utils/api';
+import { BookOpen, ArrowLeft, Plus } from 'lucide-react';
 
-// Type for form data
 interface CourseFormData {
   title: string;
   description: string;
@@ -43,7 +37,6 @@ const CreateCourse = () => {
   const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     
-    // Handle nested schedule fields
     if (name === 'startDate' || name === 'endDate') {
       setFormData({
         ...formData,
@@ -64,69 +57,174 @@ const CreateCourse = () => {
 
     try {
       await api.post('/courses', formData);
-      navigate('/manage-courses'); // Redirect to course list page
+      navigate('/manage-courses');
     } catch (err: any) {
-      setError(
-        err.response?.data?.msg || 'Something went wrong'
-      );
+      setError(err.response?.data?.msg || 'Something went wrong');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <Card className="w-[500px]">
-        <CardHeader>
-          <CardTitle>Create New Course</CardTitle>
-          <CardDescription>
-            Fill out the form below to add a new course.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={onSubmit} className="space-y-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-12 px-6">
+      {/* Animated Background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+
+      <div className="relative max-w-3xl mx-auto">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate('/manage-courses')}
+          className="mb-6 inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-purple-200 rounded-lg hover:bg-white/20 transition-all"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Courses
+        </button>
+
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex p-4 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
+            <Plus className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-cyan-200">
+            Create New Course
+          </h1>
+          <p className="text-xl text-purple-200">
+            Fill out the form below to add a new course to the institution
+          </p>
+        </div>
+
+        {/* Form Card */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-8">
+          <form onSubmit={onSubmit} className="space-y-6">
+            {/* Title */}
             <div className="space-y-2">
-              <Label htmlFor="title">Course Title</Label>
-              <Input id="title" name="title" value={title} onChange={onChange} required />
+              <label className="text-sm font-medium text-purple-100">Course Title</label>
+              <input
+                type="text"
+                name="title"
+                value={title}
+                onChange={onChange}
+                required
+                placeholder="e.g. Web Development Bootcamp"
+                className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+              />
             </div>
+
+            {/* Description */}
             <div className="space-y-2">
-              <Label htmlFor="description">Course Description</Label>
+              <label className="text-sm font-medium text-purple-100">Course Description</label>
               <textarea
-                id="description"
                 name="description"
                 value={description}
                 onChange={onChange}
-                className="flex h-24 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 required
+                rows={4}
+                placeholder="Describe the course curriculum and objectives..."
+                className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 resize-none"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="duration">Duration</Label>
-              <Input id="duration" name="duration" value={duration} onChange={onChange} required placeholder="e.g., 3 Months" />
+
+            {/* Duration and Tuition Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-purple-100">Duration</label>
+                <input
+                  type="text"
+                  name="duration"
+                  value={duration}
+                  onChange={onChange}
+                  required
+                  placeholder="e.g. 3 Months"
+                  className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-purple-100">Tuition ($)</label>
+                <input
+                  type="number"
+                  name="tuition"
+                  value={tuition}
+                  onChange={onChange}
+                  required
+                  placeholder="0"
+                  className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                />
+              </div>
             </div>
+
+            {/* Instructor */}
             <div className="space-y-2">
-              <Label htmlFor="tuition">Tuition</Label>
-              <Input id="tuition" name="tuition" type="number" value={tuition} onChange={onChange} required />
+              <label className="text-sm font-medium text-purple-100">Instructor (Optional)</label>
+              <input
+                type="text"
+                name="instructor"
+                value={instructor}
+                onChange={onChange}
+                placeholder="e.g. Dr. Jane Smith"
+                className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+              />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="instructor">Instructor</Label>
-              <Input id="instructor" name="instructor" value={instructor} onChange={onChange} />
+
+            {/* Schedule */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-purple-100">Start Date</label>
+                <input
+                  type="date"
+                  name="startDate"
+                  value={startDate}
+                  onChange={onChange}
+                  required
+                  className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-purple-100">End Date</label>
+                <input
+                  type="date"
+                  name="endDate"
+                  value={endDate}
+                  onChange={onChange}
+                  required
+                  className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="startDate">Start Date</Label>
-              <Input id="startDate" name="startDate" type="date" value={startDate} onChange={onChange} required />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="endDate">End Date</Label>
-              <Input id="endDate" name="endDate" type="date" value={endDate} onChange={onChange} required />
-            </div>
-            {error && <p className="text-sm text-red-600">{error}</p>}
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Creating...' : 'Create Course'}
-            </Button>
+
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-500/20 backdrop-blur-md border border-red-500/50 rounded-xl p-4">
+                <p className="text-sm text-red-200">{error}</p>
+              </div>
+            )}
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 inline-flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Creating Course...
+                </>
+              ) : (
+                <>
+                  <Plus className="w-5 h-5" />
+                  Create Course
+                </>
+              )}
+            </button>
           </form>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

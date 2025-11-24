@@ -1,4 +1,4 @@
-import type { ApiResponse, Application, Course, LoginData, RegisterData, User } from '@/types';
+import type { ApiResponse, Application, ApplicationWithDetails, Course, LoginData, RegisterData, User } from '@/types';
 import axios from 'axios';
 
 interface MeResponse extends ApiResponse<User> {}
@@ -59,6 +59,11 @@ export const submitApplication = async (
 
 export const getApplications = async (): Promise<ApiResponse<Application[]>> => {
   const response = await api.get<ApiResponse<Application[]>>('/applications');
+  return response.data;
+};
+
+export const getApplicationsWithDetails = async (): Promise<ApiResponse<ApplicationWithDetails[]>> => {
+  const response = await api.get<ApiResponse<ApplicationWithDetails[]>>('/applications');
   return response.data;
 };
 

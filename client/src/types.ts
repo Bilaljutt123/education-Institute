@@ -39,6 +39,20 @@ export interface Application {
   createdAt: string;
 }
 
+// Type for Application with populated student and course (used in admin views)
+export interface ApplicationWithDetails {
+  _id: string;
+  studentName: string;
+  email: string;
+  course?: {
+    _id: string;
+    title: string;
+  };
+  desiredCourse?: string; // Fallback if course is stored as string
+  status: 'pending' | 'accepted' | 'rejected';
+  createdAt: string;
+}
+
 // Type for a Course object
 export interface Course {
   _id: string;

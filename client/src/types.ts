@@ -42,8 +42,24 @@ export interface Application {
 // Type for Application with populated student and course (used in admin views)
 export interface ApplicationWithDetails {
   _id: string;
-  studentName: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  phone: string;
+  dateOfBirth: string;
+  previousEducation: string;
+  student?: {
+    _id: string;
+    name: string;
+    email: string;
+    address?: {
+      city?: string;
+    };
+    emergencyContact?: {
+      relationship?: string;
+      phone?: string;
+    };
+  };
   course?: {
     _id: string;
     title: string;

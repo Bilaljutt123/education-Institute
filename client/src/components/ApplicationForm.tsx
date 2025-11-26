@@ -3,8 +3,8 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { getCourses, submitApplication, getMe } from '@/utils/api';
-import { FileText, Lock, CheckCircle, BookOpen } from 'lucide-react';
+import { getCourses, submitApplication, getMe, getMyApplications } from '@/utils/api';
+import { FileText, Lock, CheckCircle, BookOpen, Clock } from 'lucide-react';
 
 // Type for the form data
 interface ApplicationFormData {
@@ -32,6 +32,8 @@ const ApplicationForm = () => {
   });
 
   const [courses, setCourses] = useState<any[]>([]);
+  const [myApplications, setMyApplications] = useState<any[]>([]);
+  const [enrolledCourses, setEnrolledCourses] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
@@ -116,15 +118,38 @@ const ApplicationForm = () => {
     fetchCourses();
   }, []);
 
+  // Fetch user's applications to identify enrolled courses
+  useEffect(() => {
+    const fetchMyApplications = async () => {
+      try {
+        const res = await getMyApplications();
+        setMyApplications(res.data);
+        
+        // Extract course titles for accepted applications (enrolled courses)
+        const enrolled = res.data
+          .filter((app: any) => app.status === 'accepted')
+          .map((app: any) => app.desiredCourse);
+        setEnrolledCourses(enrolled);
+      } catch (err) {
+        console.error('Could not fetch applications:', err);
+      }
+    };
+
+    fetchMyApplications();
+  }, []);
+
   // Handle input changes (only for editable fields)
   const onChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    if (name === 'desiredCourse') {
-      const selected = Array.from((e.target as HTMLSelectElement).selectedOptions, option => option.value);
-      setFormData({ ...formData, desiredCourse: selected });
+  // Handle checkbox toggle for course selection
+  const toggleCourse = (courseTitle: string) => {
+    if (desiredCourse.includes(courseTitle)) {
+      setFormData({ ...formData, desiredCourse: desiredCourse.filter(c => c !== courseTitle) });
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData({ ...formData, desiredCourse: [...desiredCourse, courseTitle] });
     }
   };
 
@@ -321,38 +346,106 @@ const ApplicationForm = () => {
               />
             </div>
 
-            {/* Course Selection (Main editable field) */}
-            <div className="space-y-2">
+            {/* Course Selection with Checkboxes */}
+            <div className="space-y-4">
               <label className="text-sm font-medium text-purple-100 flex items-center gap-2">
                 <BookOpen className="w-4 h-4" />
                 Select Courses to Apply For
               </label>
-              <select
-                name="desiredCourse"
-                multiple
-                value={desiredCourse}
-                onChange={onChange}
-                required
-                className="w-full h-48 px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
-              >
-                {courses.length > 0 ? (
-                  courses.map(course => (
-                    <option key={course._id} value={course.title} className="bg-purple-900 text-white py-2">
-                      {course.title}
-                    </option>
-                  ))
-                ) : (
-                  <option value="" disabled className="bg-purple-900 text-white">Loading courses...</option>
-                )}
-              </select>
-              <div className="flex items-center gap-2 text-sm text-purple-300">
-                <CheckCircle className="w-4 h-4" />
-                <span>Hold Ctrl (Cmd on Mac) to select multiple courses</span>
-              </div>
+              
+              {courses.length > 0 ? (
+                <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+                  {courses.map(course => {
+                    const isEnrolled = enrolledCourses.includes(course.title);
+                    const isSelected = desiredCourse.includes(course.title);
+                    const hasPendingApplication = myApplications.some(
+                      (app: any) => app.desiredCourse === course.title && app.status === 'pending'
+                    );
+
+                    return (
+                      <div
+                        key={course._id}
+                        className={`relative p-4 rounded-xl border-2 transition-all duration-300 ${
+                          isEnrolled
+                            ? 'bg-white/5 border-green-500/30 opacity-60 cursor-not-allowed'
+                            : isSelected
+                            ? 'bg-purple-500/20 border-purple-500 shadow-lg shadow-purple-500/20'
+                            : 'bg-white/10 border-white/20 hover:border-purple-400/50 cursor-pointer'
+                        }`}
+                      >
+                        <label className={`flex items-start gap-4 ${isEnrolled ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
+                          {/* Checkbox */}
+                          <div className="flex items-center pt-1">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => toggleCourse(course.title)}
+                              disabled={isEnrolled}
+                              className="w-5 h-5 rounded border-2 border-purple-400 bg-white/10 text-purple-600 focus:ring-2 focus:ring-purple-500 focus:ring-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                            />
+                          </div>
+
+                          {/* Course Info */}
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                <h3 className={`font-semibold text-lg ${isEnrolled ? 'text-gray-400' : 'text-white'}`}>
+                                  {course.title}
+                                </h3>
+                                <p className={`text-sm mt-1 ${isEnrolled ? 'text-gray-500' : 'text-purple-200'}`}>
+                                  {course.description}
+                                </p>
+                              </div>
+                              
+                              {/* Status Badges */}
+                              <div className="flex flex-col gap-2">
+                                {isEnrolled && (
+                                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-500/20 text-green-200 border border-green-500/50 text-xs font-semibold whitespace-nowrap">
+                                    <Lock className="w-3 h-3" />
+                                    Already Enrolled
+                                  </span>
+                                )}
+                                {hasPendingApplication && !isEnrolled && (
+                                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-200 border border-yellow-500/50 text-xs font-semibold whitespace-nowrap">
+                                    <Clock className="w-3 h-3" />
+                                    Pending
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Course Details */}
+                            <div className="flex items-center gap-4 mt-3 text-sm">
+                              <span className={isEnrolled ? 'text-gray-500' : 'text-purple-300'}>
+                                {course.duration}
+                              </span>
+                              <span className={`font-semibold ${isEnrolled ? 'text-gray-400' : 'text-green-400'}`}>
+                                ${course.tuition}
+                              </span>
+                            </div>
+                          </div>
+                        </label>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-purple-200">
+                  Loading courses...
+                </div>
+              )}
+
+              {/* Selected Courses Summary */}
               {desiredCourse.length > 0 && (
-                <div className="mt-2 p-3 bg-green-500/20 border border-green-500/50 rounded-lg">
-                  <p className="text-sm text-green-200">
-                    {desiredCourse.length} course{desiredCourse.length > 1 ? 's' : ''} selected: {desiredCourse.join(', ')}
+                <div className="mt-4 p-4 bg-green-500/20 border border-green-500/50 rounded-xl">
+                  <div className="flex items-center gap-2 text-green-200 mb-2">
+                    <CheckCircle className="w-5 h-5" />
+                    <span className="font-semibold">
+                      {desiredCourse.length} course{desiredCourse.length > 1 ? 's' : ''} selected
+                    </span>
+                  </div>
+                  <p className="text-sm text-green-300">
+                    {desiredCourse.join(', ')}
                   </p>
                 </div>
               )}

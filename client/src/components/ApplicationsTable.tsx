@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { CheckCircle, XCircle, Clock, Filter, Trash2 } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Filter, Trash2, Eye } from 'lucide-react';
 import { getApplicationsWithDetails, updateApplicationStatus, deleteApplication } from '@/utils/api';
 import type { ApplicationWithDetails } from '@/types';
+import StudentProfileModal from './StudentProfileModal';
 
 type FilterStatus = 'pending' | 'accepted' | 'rejected';
 
@@ -11,6 +12,7 @@ const ApplicationsTable = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterStatus>('pending');
+  const [selectedStudent, setSelectedStudent] = useState<ApplicationWithDetails | null>(null);
 
   useEffect(() => {
     fetchApplications();
@@ -179,7 +181,7 @@ const ApplicationsTable = () => {
                 <tbody className="divide-y divide-white/10">
                   {filteredApplications.map((application) => (
                     <tr key={application._id} className="hover:bg-white/5 transition-colors duration-200">
-                      <td className="px-6 py-4 text-white font-medium">{application.studentName}</td>
+                      <td className="px-6 py-4 text-white font-medium">{application.firstName} {application.lastName}</td>
                       <td className="px-6 py-4 text-purple-200">{application.email}</td>
                       <td className="px-6 py-4 text-purple-200">{application.desiredCourse || application.course?.title || 'N/A'}</td>
                       <td className="px-6 py-4">{getStatusBadge(application.status)}</td>
@@ -192,6 +194,16 @@ const ApplicationsTable = () => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2">
+                          {/* View Profile Button */}
+                          <button
+                            onClick={() => setSelectedStudent(application)}
+                            className="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
+                            title="View Student Profile"
+                          >
+                            <Eye className="w-4 h-4" />
+                            Profile
+                          </button>
+
                           {application.status === 'pending' && (
                             <>
                               <button
@@ -260,6 +272,12 @@ const ApplicationsTable = () => {
           </div>
         </div>
       </div>
+
+      {/* Student Profile Modal */}
+      <StudentProfileModal 
+        application={selectedStudent}
+        onClose={() => setSelectedStudent(null)}
+      />
     </div>
   );
 };

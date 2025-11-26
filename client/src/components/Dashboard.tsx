@@ -14,6 +14,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [coursesLoading, setCoursesLoading] = useState<boolean>(true);
   const [selectedCourseFilter, setSelectedCourseFilter] = useState<string>('all');
+  const [selectedDateFilter, setSelectedDateFilter] = useState<string>('all');
 
   // Get enrolled courses (accepted applications) for students
   const enrolledCourses = myApplications.filter(app => app.status === 'accepted');
@@ -74,12 +75,26 @@ const Dashboard = () => {
 
   // Filter accepted students for admin view
   const getAcceptedStudents = () => {
-    return adminApplications.filter(app => {
+    const now = new Date();
+    const filtered = adminApplications.filter(app => {
       const isAccepted = app.status === 'accepted';
       const matchesCourse = selectedCourseFilter === 'all' || 
         (app.desiredCourse || app.course?.title) === selectedCourseFilter;
-      return isAccepted && matchesCourse;
+      
+      // Date filtering
+      let matchesDate = true;
+      if (selectedDateFilter !== 'all') {
+        const enrollmentDate = new Date(app.createdAt);
+        const daysAgo = parseInt(selectedDateFilter);
+        const cutoffDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+        matchesDate = enrollmentDate >= cutoffDate;
+      }
+      
+      return isAccepted && matchesCourse && matchesDate;
     });
+
+    // Sort by latest enrollment date first
+    return filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   };
 
   if (!user) return <div>Loading user information...</div>;
@@ -295,9 +310,10 @@ const Dashboard = () => {
 
                       if (isEnrolled) {
                         return (
-                          <div 
+                          <Link
                             key={course._id} 
-                            className="block p-4 bg-white/5 border border-white/10 rounded-xl opacity-60 cursor-not-allowed"
+                            to={`/my-courses/${course.title}`}
+                            className="block p-4 bg-white/5 border border-white/10 rounded-xl opacity-80 hover:opacity-100 transition-all"
                           >
                             <div className="flex justify-between items-start">
                               <div>
@@ -312,7 +328,7 @@ const Dashboard = () => {
                               <span className="text-purple-300 text-sm">{course.duration}</span>
                               <span className="text-green-400 font-semibold">${course.tuition}</span>
                             </div>
-                          </div>
+                          </Link>
                         );
                       }
 
@@ -345,8 +361,15 @@ const Dashboard = () => {
           <div className="space-y-8">
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Link to="/manage-applications" className="group">
+              <Link to="/manage-applications" className="group relative">
                 <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6 hover:bg-white/15 hover:scale-105 transition-all duration-300">
+                  {/* Application Count Badge */}
+                  {adminApplications.filter(app => app.status === 'pending').length > 0 && (
+                    <div className="absolute -top-2 -right-2 w-12 h-12 rounded-full bg-gradient-to-r from-yellow-600 to-orange-600 border-4 border-slate-900 flex items-center justify-center shadow-lg shadow-yellow-500/50 animate-pulse">
+                      <span className="text-white font-bold text-lg">{adminApplications.filter(app => app.status === 'pending').length}</span>
+                    </div>
+                  )}
+                  
                   <div className="flex items-center justify-between mb-4">
                     <div className="p-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600">
                       <FileText className="w-6 h-6 text-white" />
@@ -400,18 +423,19 @@ const Dashboard = () => {
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-white">Course Enrollments</h2>
-                    <p className="text-purple-200 text-sm">View accepted students by course</p>
+                    <p className="text-purple-200 text-sm">View accepted students by course and date</p>
                   </div>
                 </div>
 
-                {/* Course Filter Dropdown */}
-                <div className="relative">
+                {/* Filters */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {/* Course Filter Dropdown */}
                   <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2">
                     <BookOpen className="w-5 h-5 text-purple-300" />
                     <select
                       value={selectedCourseFilter}
                       onChange={(e) => setSelectedCourseFilter(e.target.value)}
-                      className="bg-transparent text-white border-none focus:ring-0 cursor-pointer min-w-[200px] [&>option]:text-slate-900"
+                      className="bg-transparent text-white border-none focus:ring-0 cursor-pointer min-w-[150px] [&>option]:text-slate-900"
                     >
                       <option value="all">All Courses</option>
                       {courses.map(course => (
@@ -419,6 +443,21 @@ const Dashboard = () => {
                           {course.title}
                         </option>
                       ))}
+                    </select>
+                  </div>
+
+                  {/* Date Range Filter Dropdown */}
+                  <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2">
+                    <Calendar className="w-5 h-5 text-purple-300" />
+                    <select
+                      value={selectedDateFilter}
+                      onChange={(e) => setSelectedDateFilter(e.target.value)}
+                      className="bg-transparent text-white border-none focus:ring-0 cursor-pointer min-w-[150px] [&>option]:text-slate-900"
+                    >
+                      <option value="all">All Time</option>
+                      <option value="7">Last 7 Days</option>
+                      <option value="30">Last 30 Days</option>
+                      <option value="90">Last 90 Days</option>
                     </select>
                   </div>
                 </div>
@@ -439,7 +478,7 @@ const Dashboard = () => {
                     {getAcceptedStudents().length > 0 ? (
                       getAcceptedStudents().map((app) => (
                         <tr key={app._id} className="hover:bg-white/5 transition-colors">
-                          <td className="px-6 py-4 text-white font-medium">{app.studentName}</td>
+                          <td className="px-6 py-4 text-white font-medium">{app.firstName} {app.lastName}</td>
                           <td className="px-6 py-4 text-purple-200">{app.email}</td>
                           <td className="px-6 py-4">
                             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/20 text-green-200 border border-green-500/50 text-sm">

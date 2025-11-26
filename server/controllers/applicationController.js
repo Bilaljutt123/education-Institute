@@ -38,7 +38,7 @@ export const submitApplication = async (req, res) => {
 export const getApplications = async (req, res) => {
   try {
     // We don't need to fetch the user here because the 'admin' middleware will have already run.
-    const applications = await Application.find().populate('student', 'name email');
+    const applications = await Application.find().populate('student', 'name email address emergencyContact');
     res.status(200).json({ success: true, count: applications.length, data: applications });
   } catch (err) {
     console.error(err.message);

@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link, useLocation } from 'react-router-dom';
 import { GraduationCap, Menu, X, LogOut, LayoutDashboard, FileText, BookOpen, User } from 'lucide-react';
+import { getApplicationsWithDetails } from '@/utils/api';
+import type { ApplicationWithDetails } from '@/types';
 
 interface NavbarProps {
   onLogout: () => void;
@@ -14,6 +16,7 @@ const Navbar = ({ onLogout }: NavbarProps) => {
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [applications, setApplications] = useState<ApplicationWithDetails[]>([]);
 
   // Check if we're on the landing page
   const isLandingPage = location.pathname === '/';
@@ -26,6 +29,22 @@ const Navbar = ({ onLogout }: NavbarProps) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Fetch applications for admin users
+  useEffect(() => {
+    const fetchApplications = async () => {
+      if (user?.role === 'admin') {
+        try {
+          const res = await getApplicationsWithDetails();
+          setApplications(res.data);
+        } catch (err) {
+          console.error('Error fetching applications:', err);
+        }
+      }
+    };
+
+    fetchApplications();
+  }, [user, location]); // Refetch when location changes
 
   const navbarClasses = isLandingPage
     ? `fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -99,9 +118,14 @@ const Navbar = ({ onLogout }: NavbarProps) => {
                 {/* Admin-only links */}
                 {user.role === "admin" && (
                   <>
-                    <Link to="/manage-applications" className={linkClasses('/manage-applications')}>
+                    <Link to="/manage-applications" className={`${linkClasses('/manage-applications')} relative`}>
                       <FileText className="w-4 h-4" />
                       Applications
+                      {applications.filter(app => app.status === 'pending').length > 0 && (
+                        <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-r from-yellow-600 to-orange-600 border-2 border-purple-900 flex items-center justify-center text-[10px] font-bold text-white">
+                          {applications.filter(app => app.status === 'pending').length}
+                        </span>
+                      )}
                     </Link>
 
                     <Link to="/manage-courses" className={linkClasses('/manage-courses')}>
@@ -184,11 +208,16 @@ const Navbar = ({ onLogout }: NavbarProps) => {
                     <>
                       <Link 
                         to="/manage-applications" 
-                        className={`${linkClasses('/manage-applications')} justify-start`}
+                        className={`${linkClasses('/manage-applications')} justify-start relative`}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         <FileText className="w-4 h-4" />
                         Applications
+                        {applications.filter(app => app.status === 'pending').length > 0 && (
+                          <span className="ml-auto w-6 h-6 rounded-full bg-gradient-to-r from-yellow-600 to-orange-600 border-2 border-purple-900 flex items-center justify-center text-xs font-bold text-white">
+                            {applications.filter(app => app.status === 'pending').length}
+                          </span>
+                        )}
                       </Link>
 
                       <Link 

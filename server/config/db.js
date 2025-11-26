@@ -4,7 +4,9 @@ import mongoose from 'mongoose';
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
+      family: 4, // Use IPv4, skip trying IPv6 which can cause DNS issues on mobile
+    });
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     
@@ -21,7 +23,8 @@ const connectDB = async () => {
       }
     }
   } catch (error) {
-    console.error(`Error: ${error.message}`);
+    console.error(`❌ MongoDB Connection Error: ${error.message}`);
+    console.error(`Hint: If using mobile data, try using a standard connection string (mongodb://) instead of SRV (mongodb+srv://)`);
     process.exit(1);
   }
 };

@@ -41,10 +41,10 @@ const StudentProfile = () => {
   });
 
   if (!user) return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center">
-        <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-white text-lg">Loading profile...</p>
+        <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-gray-700 text-lg">Loading profile...</p>
       </div>
     </div>
   );
@@ -99,48 +99,41 @@ const StudentProfile = () => {
     }
   };
 
-  const inputClasses = "w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300";
-  const labelClasses = "block text-sm font-medium text-purple-200 mb-2";
+  const inputClasses = "w-full px-4 py-3 bg-white border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all";
+  const labelClasses = "block text-sm font-medium text-gray-700 mb-2";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-12 px-6">
-      {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-      </div>
-
-      <div className="relative max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gray-50 py-8 px-6">
+      <div className="max-w-4xl mx-auto">
         {/* Back Button */}
         <button
           onClick={() => navigate('/dashboard')}
-          className="mb-6 inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-purple-200 rounded-lg hover:bg-white/20 transition-all"
+          className="mb-6 inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition-all"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Dashboard
         </button>
 
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-cyan-200">
+        <div className="mb-8 bg-white rounded border border-gray-200 p-6">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Complete Your Profile
           </h1>
-          <p className="text-xl text-purple-200">
+          <p className="text-xl text-gray-600">
             Please fill out your profile information before submitting applications.
           </p>
         </div>
 
-        <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-8">
+        <div className="bg-white rounded border border-gray-200 p-8">
           <form onSubmit={onSubmit} className="space-y-8">
             
             {/* Personal Information Section */}
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 rounded-xl bg-purple-500/20">
-                  <User className="w-6 h-6 text-purple-400" />
+                <div className="p-3 rounded bg-blue-50">
+                  <User className="w-6 h-6 text-blue-600" />
                 </div>
-                <h2 className="text-2xl font-semibold text-white">Personal Information</h2>
+                <h2 className="text-2xl font-semibold text-gray-900">Personal Information</h2>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -158,10 +151,10 @@ const StudentProfile = () => {
             {/* Education Section */}
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 rounded-xl bg-cyan-500/20">
-                  <GraduationCap className="w-6 h-6 text-cyan-400" />
+                <div className="p-3 rounded bg-blue-50">
+                  <GraduationCap className="w-6 h-6 text-blue-600" />
                 </div>
-                <h2 className="text-2xl font-semibold text-white">Previous Education</h2>
+                <h2 className="text-2xl font-semibold text-gray-900">Previous Education</h2>
               </div>
               
               <div>
@@ -173,10 +166,10 @@ const StudentProfile = () => {
             {/* Address Section */}
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 rounded-xl bg-pink-500/20">
-                  <MapPin className="w-6 h-6 text-pink-400" />
+                <div className="p-3 rounded bg-blue-50">
+                  <MapPin className="w-6 h-6 text-blue-600" />
                 </div>
-                <h2 className="text-2xl font-semibold text-white">Address Details</h2>
+                <h2 className="text-2xl font-semibold text-gray-900">Address Details</h2>
               </div>
               
               <div className="space-y-6">
@@ -210,10 +203,10 @@ const StudentProfile = () => {
             {/* Emergency Contact Section */}
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 rounded-xl bg-orange-500/20">
-                  <Phone className="w-6 h-6 text-orange-400" />
+                <div className="p-3 rounded bg-blue-50">
+                  <Phone className="w-6 h-6 text-blue-600" />
                 </div>
-                <h2 className="text-2xl font-semibold text-white">Emergency Contact</h2>
+                <h2 className="text-2xl font-semibold text-gray-900">Emergency Contact</h2>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -234,22 +227,22 @@ const StudentProfile = () => {
 
             {/* Messages */}
             {error && (
-              <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-xl">
-                <p className="text-red-200">{error}</p>
+              <div className="p-4 bg-red-50 border border-red-200 rounded">
+                <p className="text-red-700">{error}</p>
               </div>
             )}
             {success && (
-              <div className="p-4 bg-green-500/20 border border-green-500/50 rounded-xl">
-                <p className="text-green-200">{success}</p>
+              <div className="p-4 bg-green-50 border border-green-200 rounded">
+                <p className="text-green-700">{success}</p>
               </div>
             )}
 
             {/* Actions */}
-            <div className="flex gap-4 pt-4 border-t border-white/10">
+            <div className="flex gap-4 pt-4 border-t border-gray-200">
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
+                className="flex-1 px-6 py-4 bg-blue-600 text-white rounded font-semibold text-lg hover:bg-blue-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>
@@ -267,7 +260,7 @@ const StudentProfile = () => {
                 type="button"
                 onClick={() => navigate('/dashboard')}
                 disabled={loading}
-                className="px-6 py-4 bg-white/10 text-purple-200 rounded-xl font-semibold text-lg hover:bg-white/20 transition-all duration-300"
+                className="px-6 py-4 bg-gray-200 text-gray-700 rounded font-semibold text-lg hover:bg-gray-300 transition-all duration-300"
               >
                 Cancel
               </button>

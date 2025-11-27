@@ -100,21 +100,14 @@ const Dashboard = () => {
   if (!user) return <div>Loading user information...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-12 px-6">
-      {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-      </div>
-
-      <div className="relative max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-50 py-8 px-6">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-cyan-200">
+        <div className="mb-8 bg-white rounded border border-gray-200 p-6">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             {user.role === 'admin' ? 'Admin Dashboard' : 'Student Dashboard'}
           </h1>
-          <p className="text-xl text-purple-200">Welcome back, {user.name}</p>
+          <p className="text-lg text-gray-600">Welcome back, {user.name}</p>
         </div>
 
         {/* STUDENT VIEW */}
@@ -122,18 +115,18 @@ const Dashboard = () => {
           <div className="space-y-6">
             {/* Profile Status */}
             {!user.profileCompleted && (
-              <div className="bg-orange-500/20 backdrop-blur-md border border-orange-500/50 rounded-xl p-4">
+              <div className="bg-yellow-50 border border-yellow-200 rounded p-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center">
-                    <span className="text-white text-xl">⚠️</span>
+                  <div className="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                    <span className="text-yellow-700 text-xl">⚠️</span>
                   </div>
                   <div>
-                    <p className="text-orange-200 font-medium">Profile Incomplete</p>
-                    <p className="text-orange-300 text-sm">Please complete your profile before submitting applications.</p>
+                    <p className="text-yellow-900 font-medium">Profile Incomplete</p>
+                    <p className="text-yellow-700 text-sm">Please complete your profile before submitting applications.</p>
                   </div>
                   <Link 
                     to="/profile" 
-                    className="ml-auto px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+                    className="ml-auto px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 transition-colors"
                   >
                     Complete Profile
                   </Link>
@@ -144,13 +137,11 @@ const Dashboard = () => {
             {/* MY ENROLLED COURSES */}
             {enrolledCourses.length > 0 && (
               <div>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600">
-                    <GraduationCap className="w-6 h-6 text-white" />
-                  </div>
+                <div className="flex items-center gap-3 mb-4">
+                  <GraduationCap className="w-6 h-6 text-blue-600" />
                   <div>
-                    <h2 className="text-2xl font-bold text-white">My Courses</h2>
-                    <p className="text-purple-200 text-sm">Courses you're currently enrolled in</p>
+                    <h2 className="text-2xl font-bold text-gray-900">My Courses</h2>
+                    <p className="text-gray-600 text-sm">Courses you're currently enrolled in</p>
                   </div>
                 </div>
 
@@ -164,36 +155,36 @@ const Dashboard = () => {
                         to={`/my-courses/${enrollment.desiredCourse}`}
                         className="block"
                       >
-                        <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6 hover:bg-white/15 hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/30">
+                        <div className="bg-white rounded border border-gray-200 p-6 hover:border-blue-400 hover:shadow-md transition-all">
                           {/* Course Header */}
                           <div className="flex items-start justify-between mb-4">
-                            <div className="p-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600">
-                              <BookOpen className="w-6 h-6 text-white" />
+                            <div className="p-3 rounded bg-blue-50">
+                              <BookOpen className="w-6 h-6 text-blue-600" />
                             </div>
-                            <div className="px-3 py-1 bg-green-500/20 border border-green-500/50 rounded-full">
-                              <span className="text-green-200 font-semibold text-xs">ENROLLED</span>
+                            <div className="px-3 py-1 bg-green-50 border border-green-200 rounded">
+                              <span className="text-green-700 font-semibold text-xs">ENROLLED</span>
                             </div>
                           </div>
 
                           {/* Course Title */}
-                          <h3 className="text-xl font-bold text-white mb-2">
+                          <h3 className="text-xl font-bold text-gray-900 mb-2">
                             {enrollment.desiredCourse}
                           </h3>
 
                           {/* Course Details */}
                           {courseDetails && (
                             <div className="space-y-2 mb-4">
-                              <p className="text-purple-200 text-sm line-clamp-2">
+                              <p className="text-gray-600 text-sm line-clamp-2">
                                 {courseDetails.description}
                               </p>
                               
                               <div className="flex items-center gap-4 text-sm">
-                                <div className="flex items-center gap-2 text-purple-300">
+                                <div className="flex items-center gap-2 text-gray-500">
                                   <Clock className="w-4 h-4" />
                                   <span>{courseDetails.duration}</span>
                                 </div>
                                 {courseDetails.instructor && (
-                                  <div className="flex items-center gap-2 text-purple-300">
+                                  <div className="flex items-center gap-2 text-gray-500">
                                     <User className="w-4 h-4" />
                                     <span>{courseDetails.instructor}</span>
                                   </div>
@@ -201,7 +192,7 @@ const Dashboard = () => {
                               </div>
 
                               {courseDetails.schedule && (
-                                <div className="flex items-center gap-2 text-purple-300 text-sm">
+                                <div className="flex items-center gap-2 text-gray-500 text-sm">
                                   <Calendar className="w-4 h-4" />
                                   <span>
                                     {new Date(courseDetails.schedule.startDate).toLocaleDateString()} - {new Date(courseDetails.schedule.endDate).toLocaleDateString()}
@@ -212,8 +203,8 @@ const Dashboard = () => {
                           )}
 
                           {/* Quick Links */}
-                          <div className="pt-4 border-t border-white/10">
-                            <span className="text-purple-300 text-sm hover:text-white transition-colors">
+                          <div className="pt-4 border-t border-gray-200">
+                            <span className="text-blue-600 text-sm hover:text-blue-700 transition-colors">
                               View Course Materials & Assignments →
                             </span>
                           </div>
@@ -227,20 +218,18 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* My Applications */}
-              <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6">
+              <div className="bg-white rounded border border-gray-200 p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600">
-                      <FileText className="w-6 h-6 text-white" />
-                    </div>
+                    <FileText className="w-6 h-6 text-blue-600" />
                     <div>
-                      <h2 className="text-xl font-semibold text-white">My Applications</h2>
-                      <p className="text-purple-200 text-sm">Track your application status</p>
+                      <h2 className="text-xl font-semibold text-gray-900">My Applications</h2>
+                      <p className="text-gray-600 text-sm">Track your application status</p>
                     </div>
                   </div>
                   <Link 
                     to="/apply" 
-                    className="px-3 py-1.5 bg-purple-500/20 text-purple-200 hover:bg-purple-500/30 hover:text-white rounded-lg text-sm transition-colors border border-purple-500/30"
+                    className="px-3 py-1.5 bg-blue-600 text-white hover:bg-blue-700 rounded text-sm transition-colors"
                   >
                     + New Application
                   </Link>
@@ -248,25 +237,25 @@ const Dashboard = () => {
 
                 {loading ? (
                   <div className="text-center py-8">
-                    <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
                   </div>
                 ) : myApplications.length > 0 ? (
                   <div className="space-y-3">
                     {myApplications.map((app) => (
-                      <div key={app._id} className="p-4 bg-white/5 border border-white/10 rounded-xl">
-                        <p className="text-white font-medium">{app.desiredCourse}</p>
+                      <div key={app._id} className="p-4 bg-gray-50 border border-gray-200 rounded">
+                        <p className="text-gray-900 font-medium">{app.desiredCourse}</p>
                         <div className="flex items-center gap-2 mt-2">
-                          {app.status === 'accepted' && <CheckCircle className="w-4 h-4 text-green-400" />}
-                          {app.status === 'pending' && <Clock className="w-4 h-4 text-yellow-400" />}
-                          {app.status === 'rejected' && <XCircle className="w-4 h-4 text-red-400" />}
+                          {app.status === 'accepted' && <CheckCircle className="w-4 h-4 text-green-600" />}
+                          {app.status === 'pending' && <Clock className="w-4 h-4 text-yellow-600" />}
+                          {app.status === 'rejected' && <XCircle className="w-4 h-4 text-red-600" />}
                           <span className={`text-sm font-semibold ${
-                            app.status === 'accepted' ? 'text-green-400' :
-                            app.status === 'rejected' ? 'text-red-400' : 'text-yellow-400'
+                            app.status === 'accepted' ? 'text-green-600' :
+                            app.status === 'rejected' ? 'text-red-600' : 'text-yellow-600'
                           }`}>
                             {app.status.toUpperCase()}
                           </span>
                         </div>
-                        <p className="text-purple-300 text-xs mt-2">
+                        <p className="text-gray-500 text-xs mt-2">
                           Submitted: {new Date(app.createdAt).toLocaleDateString()}
                         </p>
                       </div>
@@ -274,10 +263,10 @@ const Dashboard = () => {
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <p className="text-purple-200 mb-4">No applications submitted yet</p>
+                    <p className="text-gray-600 mb-4">No applications submitted yet</p>
                     <Link 
                       to="/apply" 
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all"
                     >
                       Submit Application
                     </Link>
@@ -286,20 +275,18 @@ const Dashboard = () => {
               </div>
 
               {/* Available Courses */}
-              <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6">
+              <div className="bg-white rounded border border-gray-200 p-6">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-3 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600">
-                    <BookOpen className="w-6 h-6 text-white" />
-                  </div>
+                  <BookOpen className="w-6 h-6 text-blue-600" />
                   <div>
-                    <h2 className="text-xl font-semibold text-white">Available Courses</h2>
-                    <p className="text-purple-200 text-sm">Browse course offerings</p>
+                    <h2 className="text-xl font-semibold text-gray-900">Available Courses</h2>
+                    <p className="text-gray-600 text-sm">Browse course offerings</p>
                   </div>
                 </div>
 
                 {coursesLoading ? (
                   <div className="text-center py-8">
-                    <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
                   </div>
                 ) : courses.length > 0 ? (
                   <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -313,20 +300,20 @@ const Dashboard = () => {
                           <Link
                             key={course._id} 
                             to={`/my-courses/${course.title}`}
-                            className="block p-4 bg-white/5 border border-white/10 rounded-xl opacity-80 hover:opacity-100 transition-all"
+                            className="block p-4 bg-gray-50 border border-gray-200 rounded hover:border-blue-400 transition-all"
                           >
                             <div className="flex justify-between items-start">
                               <div>
-                                <h3 className="text-white font-semibold">{course.title}</h3>
-                                <p className="text-purple-200 text-sm mt-1 line-clamp-2">{course.description}</p>
+                                <h3 className="text-gray-900 font-semibold">{course.title}</h3>
+                                <p className="text-gray-600 text-sm mt-1 line-clamp-2">{course.description}</p>
                               </div>
-                              <span className="px-2 py-1 bg-green-500/20 text-green-200 text-xs rounded-full border border-green-500/50">
+                              <span className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded border border-green-200">
                                 Enrolled
                               </span>
                             </div>
                             <div className="flex justify-between items-center mt-3">
-                              <span className="text-purple-300 text-sm">{course.duration}</span>
-                              <span className="text-green-400 font-semibold">${course.tuition}</span>
+                              <span className="text-gray-500 text-sm">{course.duration}</span>
+                              <span className="text-blue-600 font-semibold">${course.tuition}</span>
                             </div>
                           </Link>
                         );
@@ -336,20 +323,20 @@ const Dashboard = () => {
                         <Link 
                           key={course._id} 
                           to={`/courses/${course._id}`}
-                          className="block p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all"
+                          className="block p-4 bg-gray-50 border border-gray-200 rounded hover:bg-gray-100 hover:border-blue-400 transition-all"
                         >
-                          <h3 className="text-white font-semibold">{course.title}</h3>
-                          <p className="text-purple-200 text-sm mt-1 line-clamp-2">{course.description}</p>
+                          <h3 className="text-gray-900 font-semibold">{course.title}</h3>
+                          <p className="text-gray-600 text-sm mt-1 line-clamp-2">{course.description}</p>
                           <div className="flex justify-between items-center mt-3">
-                            <span className="text-purple-300 text-sm">{course.duration}</span>
-                            <span className="text-green-400 font-semibold">${course.tuition}</span>
+                            <span className="text-gray-500 text-sm">{course.duration}</span>
+                            <span className="text-blue-600 font-semibold">${course.tuition}</span>
                           </div>
                         </Link>
                       );
                     })}
                   </div>
                 ) : (
-                  <p className="text-purple-200 text-center py-8">No courses available</p>
+                  <p className="text-gray-600 text-center py-8">No courses available</p>
                 )}
               </div>
             </div>
@@ -362,80 +349,72 @@ const Dashboard = () => {
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Link to="/manage-applications" className="group relative">
-                <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6 hover:bg-white/15 hover:scale-105 transition-all duration-300">
+                <div className="bg-white rounded border border-gray-200 p-6 hover:border-blue-400 hover:shadow-md transition-all">
                   {/* Application Count Badge */}
                   {adminApplications.filter(app => app.status === 'pending').length > 0 && (
-                    <div className="absolute -top-2 -right-2 w-12 h-12 rounded-full bg-gradient-to-r from-yellow-600 to-orange-600 border-4 border-slate-900 flex items-center justify-center shadow-lg shadow-yellow-500/50 animate-pulse">
-                      <span className="text-white font-bold text-lg">{adminApplications.filter(app => app.status === 'pending').length}</span>
+                    <div className="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-red-600 border-4 border-white flex items-center justify-center shadow-md">
+                      <span className="text-white font-bold text-sm">{adminApplications.filter(app => app.status === 'pending').length}</span>
                     </div>
                   )}
                   
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600">
-                      <FileText className="w-6 h-6 text-white" />
+                    <div className="p-3 rounded bg-blue-50">
+                      <FileText className="w-6 h-6 text-blue-600" />
                     </div>
-                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                      <span className="text-white">→</span>
-                    </div>
+                    <span className="text-gray-400 group-hover:text-blue-600 transition-colors">→</span>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-2">Manage Applications</h3>
-                  <p className="text-purple-200 text-sm">Review and process student applications</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Manage Applications</h3>
+                  <p className="text-gray-600 text-sm">Review and process student applications</p>
                 </div>
               </Link>
 
               <Link to="/manage-courses" className="group">
-                <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6 hover:bg-white/15 hover:scale-105 transition-all duration-300">
+                <div className="bg-white rounded border border-gray-200 p-6 hover:border-blue-400 hover:shadow-md transition-all">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600">
-                      <BookOpen className="w-6 h-6 text-white" />
+                    <div className="p-3 rounded bg-blue-50">
+                      <BookOpen className="w-6 h-6 text-blue-600" />
                     </div>
-                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                      <span className="text-white">→</span>
-                    </div>
+                    <span className="text-gray-400 group-hover:text-blue-600 transition-colors">→</span>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-2">Manage Courses</h3>
-                  <p className="text-purple-200 text-sm">View and edit existing courses</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Manage Courses</h3>
+                  <p className="text-gray-600 text-sm">View and edit existing courses</p>
                 </div>
               </Link>
 
               <Link to="/create-course" className="group">
-                <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6 hover:bg-white/15 hover:scale-105 transition-all duration-300">
+                <div className="bg-white rounded border border-gray-200 p-6 hover:border-blue-400 hover:shadow-md transition-all">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600">
-                      <GraduationCap className="w-6 h-6 text-white" />
+                    <div className="p-3 rounded bg-blue-50">
+                      <GraduationCap className="w-6 h-6 text-blue-600" />
                     </div>
-                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                      <span className="text-white">→</span>
-                    </div>
+                    <span className="text-gray-400 group-hover:text-blue-600 transition-colors">→</span>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-2">Create Course</h3>
-                  <p className="text-purple-200 text-sm">Add new courses to the curriculum</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Create Course</h3>
+                  <p className="text-gray-600 text-sm">Add new courses to the curriculum</p>
                 </div>
               </Link>
             </div>
 
             {/* Course Enrollments Section */}
-            <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6">
+            <div className="bg-white rounded border border-gray-200 p-6">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-xl bg-gradient-to-r from-orange-600 to-red-600">
-                    <User className="w-6 h-6 text-white" />
-                  </div>
+                  <User className="w-6 h-6 text-blue-600" />
                   <div>
-                    <h2 className="text-2xl font-bold text-white">Course Enrollments</h2>
-                    <p className="text-purple-200 text-sm">View accepted students by course and date</p>
+                    <h2 className="text-2xl font-bold text-gray-900">Course Enrollments</h2>
+                    <p className="text-gray-600 text-sm">View accepted students by course and date</p>
                   </div>
                 </div>
 
                 {/* Filters */}
                 <div className="flex flex-col sm:flex-row gap-3">
                   {/* Course Filter Dropdown */}
-                  <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2">
-                    <BookOpen className="w-5 h-5 text-purple-300" />
+                  <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded px-4 py-2">
+                    <BookOpen className="w-5 h-5 text-gray-500" />
                     <select
                       value={selectedCourseFilter}
                       onChange={(e) => setSelectedCourseFilter(e.target.value)}
-                      className="bg-transparent text-white border-none focus:ring-0 cursor-pointer min-w-[150px] [&>option]:text-slate-900"
+                      className="bg-transparent text-gray-900 border-none focus:ring-0 cursor-pointer min-w-[150px] [&>option]:text-gray-900"
                     >
                       <option value="all">All Courses</option>
                       {courses.map(course => (
@@ -447,12 +426,12 @@ const Dashboard = () => {
                   </div>
 
                   {/* Date Range Filter Dropdown */}
-                  <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2">
-                    <Calendar className="w-5 h-5 text-purple-300" />
+                  <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded px-4 py-2">
+                    <Calendar className="w-5 h-5 text-gray-500" />
                     <select
                       value={selectedDateFilter}
                       onChange={(e) => setSelectedDateFilter(e.target.value)}
-                      className="bg-transparent text-white border-none focus:ring-0 cursor-pointer min-w-[150px] [&>option]:text-slate-900"
+                      className="bg-transparent text-gray-900 border-none focus:ring-0 cursor-pointer min-w-[150px] [&>option]:text-gray-900"
                     >
                       <option value="all">All Time</option>
                       <option value="7">Last 7 Days</option>
@@ -467,33 +446,33 @@ const Dashboard = () => {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-white/10">
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Student Name</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Email</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Enrolled Course</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Enrollment Date</th>
+                    <tr className="border-b border-gray-200">
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Student Name</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Email</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Enrolled Course</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Enrollment Date</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/10">
+                  <tbody className="divide-y divide-gray-200">
                     {getAcceptedStudents().length > 0 ? (
                       getAcceptedStudents().map((app) => (
-                        <tr key={app._id} className="hover:bg-white/5 transition-colors">
-                          <td className="px-6 py-4 text-white font-medium">{app.firstName} {app.lastName}</td>
-                          <td className="px-6 py-4 text-purple-200">{app.email}</td>
+                        <tr key={app._id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-6 py-4 text-gray-900 font-medium">{app.firstName} {app.lastName}</td>
+                          <td className="px-6 py-4 text-gray-600">{app.email}</td>
                           <td className="px-6 py-4">
-                            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/20 text-green-200 border border-green-500/50 text-sm">
+                            <span className="inline-flex items-center gap-2 px-3 py-1 rounded bg-green-50 text-green-700 border border-green-200 text-sm">
                               <BookOpen className="w-3 h-3" />
                               {app.desiredCourse || app.course?.title}
                             </span>
                           </td>
-                          <td className="px-6 py-4 text-purple-200">
+                          <td className="px-6 py-4 text-gray-600">
                             {new Date(app.createdAt).toLocaleDateString()}
                           </td>
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={4} className="px-6 py-12 text-center text-purple-200">
+                        <td colSpan={4} className="px-6 py-12 text-center text-gray-600">
                           No enrolled students found for the selected course.
                         </td>
                       </tr>

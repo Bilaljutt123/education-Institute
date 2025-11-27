@@ -58,9 +58,9 @@ const ApplicationsTable = () => {
 
   const getStatusBadge = (status: string) => {
     const styles = {
-      pending: 'bg-yellow-500/20 text-yellow-200 border-yellow-500/50',
-      accepted: 'bg-green-500/20 text-green-200 border-green-500/50',
-      rejected: 'bg-red-500/20 text-red-200 border-red-500/50',
+      pending: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+      accepted: 'bg-green-50 text-green-700 border-green-200',
+      rejected: 'bg-red-50 text-red-700 border-red-200',
     };
 
     const icons = {
@@ -70,7 +70,7 @@ const ApplicationsTable = () => {
     };
 
     return (
-      <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border ${styles[status as keyof typeof styles]} font-medium text-sm`}>
+      <span className={`inline-flex items-center gap-2 px-3 py-1 rounded border ${styles[status as keyof typeof styles]} font-medium text-sm`}>
         {icons[status as keyof typeof icons]}
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
@@ -78,18 +78,18 @@ const ApplicationsTable = () => {
   };
 
   const getFilterButtonClass = (filter: FilterStatus) => {
-    const baseClass = "px-6 py-3 rounded-xl font-semibold transition-all duration-300 inline-flex items-center gap-2";
+    const baseClass = "px-6 py-3 rounded font-semibold transition-all inline-flex items-center gap-2";
     
     if (activeFilter === filter) {
       const activeStyles = {
-        pending: 'bg-gradient-to-r from-yellow-600 to-yellow-500 text-white shadow-lg shadow-yellow-500/50',
-        accepted: 'bg-gradient-to-r from-green-600 to-green-500 text-white shadow-lg shadow-green-500/50',
-        rejected: 'bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/50',
+        pending: 'bg-yellow-600 text-white',
+        accepted: 'bg-green-600 text-white',
+        rejected: 'bg-red-600 text-white',
       };
       return `${baseClass} ${activeStyles[filter]}`;
     }
     
-    return `${baseClass} bg-white/10 backdrop-blur-md border border-white/20 text-purple-100 hover:bg-white/20`;
+    return `${baseClass} bg-white border border-gray-300 text-gray-700 hover:bg-gray-50`;
   };
 
   const getCount = (status: FilterStatus) => {
@@ -98,94 +98,88 @@ const ApplicationsTable = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white text-lg">Loading applications...</p>
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-700 text-lg">Loading applications...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-12 px-6">
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-      </div>
-
-      <div className="relative max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-cyan-200">
+    <div className="min-h-screen bg-gray-50 py-8 px-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8 bg-white rounded border border-gray-200 p-6">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Manage Applications
           </h1>
-          <p className="text-xl text-purple-200">Review and manage student applications</p>
+          <p className="text-xl text-gray-600">Review and manage student applications</p>
         </div>
 
-        <div className="mb-8 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6">
+        <div className="mb-8 bg-white rounded border border-gray-200 p-6">
           <div className="flex items-center gap-3 mb-4">
-            <Filter className="w-6 h-6 text-purple-300" />
-            <h2 className="text-xl font-semibold text-white">Filter by Status</h2>
+            <Filter className="w-6 h-6 text-gray-600" />
+            <h2 className="text-xl font-semibold text-gray-900">Filter by Status</h2>
           </div>
           
           <div className="flex flex-wrap gap-4">
             <button onClick={() => setActiveFilter('pending')} className={getFilterButtonClass('pending')}>
               <Clock className="w-5 h-5" />
               Pending
-              <span className="ml-2 px-2 py-0.5 bg-white/20 rounded-full text-xs">{getCount('pending')}</span>
+              <span className="ml-2 px-2 py-0.5 bg-white/30 rounded-full text-xs">{getCount('pending')}</span>
             </button>
 
             <button onClick={() => setActiveFilter('accepted')} className={getFilterButtonClass('accepted')}>
               <CheckCircle className="w-5 h-5" />
               Accepted
-              <span className="ml-2 px-2 py-0.5 bg-white/20 rounded-full text-xs">{getCount('accepted')}</span>
+              <span className="ml-2 px-2 py-0.5 bg-white/30 rounded-full text-xs">{getCount('accepted')}</span>
             </button>
 
             <button onClick={() => setActiveFilter('rejected')} className={getFilterButtonClass('rejected')}>
               <XCircle className="w-5 h-5" />
               Rejected
-              <span className="ml-2 px-2 py-0.5 bg-white/20 rounded-full text-xs">{getCount('rejected')}</span>
+              <span className="ml-2 px-2 py-0.5 bg-white/30 rounded-full text-xs">{getCount('rejected')}</span>
             </button>
           </div>
         </div>
 
         {error && (
-          <div className="mb-6 bg-red-500/20 backdrop-blur-md border border-red-500/50 rounded-xl p-4">
-            <p className="text-red-200">{error}</p>
+          <div className="mb-6 bg-red-50 border border-red-200 rounded p-4">
+            <p className="text-red-700">{error}</p>
           </div>
         )}
 
-        <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden">
+        <div className="bg-white rounded border border-gray-200 overflow-hidden">
           {filteredApplications.length === 0 ? (
             <div className="p-12 text-center">
-              <div className="inline-flex p-6 rounded-full bg-purple-500/20 mb-4">
-                <Filter className="w-12 h-12 text-purple-300" />
+              <div className="inline-flex p-6 rounded-full bg-gray-100 mb-4">
+                <Filter className="w-12 h-12 text-gray-400" />
               </div>
-              <h3 className="text-2xl font-semibold text-white mb-2">No {activeFilter} applications</h3>
-              <p className="text-purple-200">There are currently no {activeFilter} applications to display.</p>
+              <h3 className="text-2xl font-semibold text-gray-900 mb-2">No {activeFilter} applications</h3>
+              <p className="text-gray-600">There are currently no {activeFilter} applications to display.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-white/10">
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Student</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Email</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Course</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Applied On</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Actions</th>
+                  <tr className="border-b border-gray-200 bg-gray-50">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Student</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Email</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Course</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Applied On</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/10">
+                <tbody className="divide-y divide-gray-200">
                   {filteredApplications.map((application) => (
-                    <tr key={application._id} className="hover:bg-white/5 transition-colors duration-200">
-                      <td className="px-6 py-4 text-white font-medium">{application.firstName} {application.lastName}</td>
-                      <td className="px-6 py-4 text-purple-200">{application.email}</td>
-                      <td className="px-6 py-4 text-purple-200">{application.desiredCourse || application.course?.title || 'N/A'}</td>
+                    <tr key={application._id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 text-gray-900 font-medium">{application.firstName} {application.lastName}</td>
+                      <td className="px-6 py-4 text-gray-600">{application.email}</td>
+                      <td className="px-6 py-4 text-gray-600">{application.desiredCourse || application.course?.title || 'N/A'}</td>
                       <td className="px-6 py-4">{getStatusBadge(application.status)}</td>
-                      <td className="px-6 py-4 text-purple-200">
+                      <td className="px-6 py-4 text-gray-600">
                         {new Date(application.createdAt).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'short',
@@ -197,7 +191,7 @@ const ApplicationsTable = () => {
                           {/* View Profile Button */}
                           <button
                             onClick={() => setSelectedStudent(application)}
-                            className="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
+                            className="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 transition-all inline-flex items-center gap-2"
                             title="View Student Profile"
                           >
                             <Eye className="w-4 h-4" />
@@ -208,14 +202,14 @@ const ApplicationsTable = () => {
                             <>
                               <button
                                 onClick={() => updateStatus(application._id, 'accepted')}
-                                className="px-4 py-2 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-green-500/50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
+                                className="px-4 py-2 bg-green-600 text-white rounded font-medium hover:bg-green-700 transition-all inline-flex items-center gap-2"
                               >
                                 <CheckCircle className="w-4 h-4" />
                                 Accept
                               </button>
                               <button
                                 onClick={() => updateStatus(application._id, 'rejected')}
-                                className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-red-500/50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
+                                className="px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-700 transition-all inline-flex items-center gap-2"
                               >
                                 <XCircle className="w-4 h-4" />
                                 Reject
@@ -224,7 +218,7 @@ const ApplicationsTable = () => {
                           )}
                           <button
                             onClick={() => handleDelete(application._id)}
-                            className="px-4 py-2 bg-gradient-to-r from-gray-600 to-gray-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-gray-500/50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
+                            className="px-4 py-2 bg-gray-600 text-white rounded font-medium hover:bg-gray-700 transition-all inline-flex items-center gap-2"
                             title="Delete Application"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -241,32 +235,32 @@ const ApplicationsTable = () => {
         </div>
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-yellow-500/10 backdrop-blur-md border border-yellow-500/30 rounded-xl p-6">
+          <div className="bg-yellow-50 border border-yellow-200 rounded p-6">
             <div className="flex items-center gap-3">
-              <Clock className="w-8 h-8 text-yellow-400" />
+              <Clock className="w-8 h-8 text-yellow-600" />
               <div>
-                <p className="text-yellow-200 text-sm">Pending</p>
-                <p className="text-white text-2xl font-bold">{getCount('pending')}</p>
+                <p className="text-yellow-700 text-sm">Pending</p>
+                <p className="text-yellow-900 text-2xl font-bold">{getCount('pending')}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-green-500/10 backdrop-blur-md border border-green-500/30 rounded-xl p-6">
+          <div className="bg-green-50 border border-green-200 rounded p-6">
             <div className="flex items-center gap-3">
-              <CheckCircle className="w-8 h-8 text-green-400" />
+              <CheckCircle className="w-8 h-8 text-green-600" />
               <div>
-                <p className="text-green-200 text-sm">Accepted</p>
-                <p className="text-white text-2xl font-bold">{getCount('accepted')}</p>
+                <p className="text-green-700 text-sm">Accepted</p>
+                <p className="text-green-900 text-2xl font-bold">{getCount('accepted')}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-red-500/10 backdrop-blur-md border border-red-500/30 rounded-xl p-6">
+          <div className="bg-red-50 border border-red-200 rounded p-6">
             <div className="flex items-center gap-3">
-              <XCircle className="w-8 h-8 text-red-400" />
+              <XCircle className="w-8 h-8 text-red-600" />
               <div>
-                <p className="text-red-200 text-sm">Rejected</p>
-                <p className="text-white text-2xl font-bold">{getCount('rejected')}</p>
+                <p className="text-red-700 text-sm">Rejected</p>
+                <p className="text-red-900 text-2xl font-bold">{getCount('rejected')}</p>
               </div>
             </div>
           </div>

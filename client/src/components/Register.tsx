@@ -48,22 +48,15 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen p-8 flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-      </div>
-
-      <div className="relative w-full max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-8 items-center">
+    <div className="min-h-screen p-8 flex items-center justify-center bg-gray-50">
+      <div className="w-full max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-8 items-center">
         
         {/* Left Side - Welcome Message */}
-        <div className="hidden md:block text-white">
-          <h1 className="text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-cyan-200">
+        <div className="hidden md:block">
+          <h1 className="text-5xl font-bold mb-6 text-gray-900">
             Start Your Journey!
           </h1>
-          <p className="text-xl text-gray-300 mb-8 leading-relaxed">
+          <p className="text-xl text-gray-600 mb-8 leading-relaxed">
             Join thousands of students transforming their future through education. Create your account and get started today.
           </p>
           
@@ -78,7 +71,7 @@ const Register = () => {
                 <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
                   <CheckCircle className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-lg text-purple-100">{item}</span>
+                <span className="text-lg text-gray-700">{item}</span>
               </div>
             ))}
           </div>
@@ -86,19 +79,19 @@ const Register = () => {
 
         {/* Right Side - Register Form */}
         <div className="w-full">
-          <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-8 md:p-10">
+          <div className="bg-white rounded border border-gray-200 shadow-sm p-8 md:p-10">
             <div className="text-center mb-8">
-              <div className="inline-flex p-4 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
+              <div className="inline-flex p-4 rounded bg-blue-600 mb-4">
                 <UserPlus className="w-8 h-8 text-white" />
               </div>
-              <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
-              <p className="text-purple-200">Get started with your free account</p>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
+              <p className="text-gray-600">Get started with your free account</p>
             </div>
 
             <form onSubmit={onSubmit} className="space-y-5">
               {/* Name Field */}
               <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-medium text-purple-100 flex items-center gap-2">
+                <label htmlFor="name" className="text-sm font-medium text-gray-700 flex items-center gap-2">
                   <User className="w-4 h-4" />
                   Full Name
                 </label>
@@ -110,13 +103,13 @@ const Register = () => {
                   onChange={onChange}
                   placeholder="John Doe"
                   required
-                  className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
 
               {/* Email Field */}
               <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium text-purple-100 flex items-center gap-2">
+                <label htmlFor="email" className="text-sm font-medium text-gray-700 flex items-center gap-2">
                   <Mail className="w-4 h-4" />
                   Email Address
                 </label>
@@ -128,13 +121,13 @@ const Register = () => {
                   onChange={onChange}
                   placeholder="e.g., student@example.com"
                   required
-                  className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
 
               {/* Password Field */}
               <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-medium text-purple-100 flex items-center gap-2">
+                <label htmlFor="password" className="text-sm font-medium text-gray-700 flex items-center gap-2">
                   <Lock className="w-4 h-4" />
                   Password
                 </label>
@@ -146,13 +139,13 @@ const Register = () => {
                   onChange={onChange}
                   placeholder="Create a strong password"
                   required
-                  className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
 
               {/* Role Field */}
               <div className="space-y-2">
-                <label htmlFor="role" className="text-sm font-medium text-purple-100">
+                <label htmlFor="role" className="text-sm font-medium text-gray-700">
                   Register As
                 </label>
                 <select
@@ -160,17 +153,17 @@ const Register = () => {
                   name="role"
                   value={role}
                   onChange={onChange}
-                  className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
-                  <option value="student" className="bg-purple-900 text-white">Student</option>
-                  {/* <option value="admin" className="bg-purple-900 text-white">Admin</option> */}
+                  <option value="student">Student</option>
+                  {/* <option value="admin">Admin</option> */}
                 </select>
               </div>
 
               {/* Error Message */}
               {error && (
-                <div className="bg-red-500/20 backdrop-blur-md border border-red-500/50 rounded-xl p-4">
-                  <p className="text-sm text-red-200">{error}</p>
+                <div className="bg-red-50 border border-red-200 rounded p-4">
+                  <p className="text-sm text-red-700">{error}</p>
                 </div>
               )}
 
@@ -178,7 +171,7 @@ const Register = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 inline-flex items-center justify-center gap-2"
+                className="w-full px-6 py-4 bg-blue-600 text-white rounded font-semibold text-lg hover:bg-blue-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>
@@ -196,11 +189,11 @@ const Register = () => {
 
             {/* Footer Links */}
             <div className="mt-8 text-center">
-              <p className="text-purple-200">
+              <p className="text-gray-600">
                 Already have an account?{' '}
                 <Link 
                   to="/login" 
-                  className="text-white font-semibold hover:text-purple-300 transition-colors duration-300 underline decoration-purple-500"
+                  className="text-blue-600 font-semibold hover:text-blue-700 transition-colors duration-300"
                 >
                   Sign In
                 </Link>
@@ -212,7 +205,7 @@ const Register = () => {
           <div className="mt-6 text-center">
             <Link 
               to="/" 
-              className="text-purple-200 hover:text-white transition-colors duration-300 inline-flex items-center gap-2"
+              className="text-gray-600 hover:text-gray-900 transition-colors duration-300 inline-flex items-center gap-2"
             >
               ← Back to Home
             </Link>

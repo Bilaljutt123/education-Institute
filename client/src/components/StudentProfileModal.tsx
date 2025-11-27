@@ -1,4 +1,4 @@
-import { X, User, Mail, Phone, Calendar, GraduationCap, MapPin, UserCircle, AlertCircle } from 'lucide-react';
+import { X, User, Mail, Phone, Calendar, GraduationCap, MapPin, UserCircle } from 'lucide-react';
 import type { ApplicationWithDetails } from '@/types';
 
 interface StudentProfileModalProps {
@@ -11,41 +11,41 @@ const StudentProfileModal = ({ application, onClose }: StudentProfileModalProps)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 rounded-2xl border border-white/20 shadow-2xl">
+      <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-white rounded border border-gray-200 shadow-2xl">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 transition-all duration-300 hover:scale-110 z-10"
+          className="absolute top-4 right-4 p-2 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300 transition-all z-10"
         >
-          <X className="w-6 h-6 text-white" />
+          <X className="w-6 h-6 text-gray-700" />
         </button>
 
         {/* Header */}
-        <div className="relative p-8 pb-6 border-b border-white/10">
+        <div className="p-8 pb-6 border-b border-gray-200">
           <div className="flex items-center gap-6">
             {/* Avatar */}
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center shadow-lg">
+            <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center shadow-md">
               <User className="w-10 h-10 text-white" />
             </div>
             
             {/* Student Name & Email */}
             <div className="flex-1">
-              <h2 className="text-3xl font-bold text-white mb-2">
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">
                 {application.firstName} {application.lastName}
               </h2>
-              <div className="flex items-center gap-2 text-purple-200">
+              <div className="flex items-center gap-2 text-gray-600">
                 <Mail className="w-4 h-4" />
                 <span>{application.email}</span>
               </div>
             </div>
 
             {/* Status Badge */}
-            <div className={`px-4 py-2 rounded-full border font-semibold ${
+            <div className={`px-4 py-2 rounded border font-semibold ${
               application.status === 'pending' 
-                ? 'bg-yellow-500/20 text-yellow-200 border-yellow-500/50'
+                ? 'bg-yellow-50 text-yellow-700 border-yellow-200'
                 : application.status === 'accepted'
-                ? 'bg-green-500/20 text-green-200 border-green-500/50'
-                : 'bg-red-500/20 text-red-200 border-red-500/50'
+                ? 'bg-green-50 text-green-700 border-green-200'
+                : 'bg-red-50 text-red-700 border-red-200'
             }`}>
               {application.status.charAt(0).toUpperCase() + application.status.slice(1)}
             </div>
@@ -55,25 +55,25 @@ const StudentProfileModal = ({ application, onClose }: StudentProfileModalProps)
         {/* Content */}
         <div className="p-8 space-y-6">
           {/* Personal Details Section */}
-          <div className="bg-white/5 backdrop-blur-md rounded-xl p-6 border border-white/10">
-            <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-              <UserCircle className="w-6 h-6 text-purple-400" />
+          <div className="bg-gray-50 rounded border border-gray-200 p-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <UserCircle className="w-6 h-6 text-blue-600" />
               Personal Details
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <p className="text-sm text-purple-300 font-medium">Phone</p>
-                <div className="flex items-center gap-2 text-white">
-                  <Phone className="w-4 h-4 text-purple-400" />
+                <p className="text-sm text-gray-600 font-medium">Phone</p>
+                <div className="flex items-center gap-2 text-gray-900">
+                  <Phone className="w-4 h-4 text-blue-600" />
                   <span className="font-semibold">{application.phone || 'N/A'}</span>
                 </div>
               </div>
 
               <div className="space-y-1">
-                <p className="text-sm text-purple-300 font-medium">Date of Birth</p>
-                <div className="flex items-center gap-2 text-white">
-                  <Calendar className="w-4 h-4 text-purple-400" />
+                <p className="text-sm text-gray-600 font-medium">Date of Birth</p>
+                <div className="flex items-center gap-2 text-gray-900">
+                  <Calendar className="w-4 h-4 text-blue-600" />
                   <span className="font-semibold">
                     {application.dateOfBirth ? new Date(application.dateOfBirth).toLocaleDateString() : 'N/A'}
                   </span>
@@ -81,51 +81,51 @@ const StudentProfileModal = ({ application, onClose }: StudentProfileModalProps)
               </div>
 
               <div className="space-y-1">
-                <p className="text-sm text-purple-300 font-medium">City</p>
-                <div className="flex items-center gap-2 text-white">
-                  <MapPin className="w-4 h-4 text-purple-400" />
+                <p className="text-sm text-gray-600 font-medium">City</p>
+                <div className="flex items-center gap-2 text-gray-900">
+                  <MapPin className="w-4 h-4 text-blue-600" />
                   <span className="font-semibold">{application.student?.address?.city || 'N/A'}</span>
                 </div>
               </div>
 
               <div className="space-y-1">
-                <p className="text-sm text-purple-300 font-medium">Emergency Contact</p>
-                <div className="text-white">
+                <p className="text-sm text-gray-600 font-medium">Emergency Contact</p>
+                <div className="text-gray-900">
                   <p className="font-semibold">{application.student?.emergencyContact?.phone || 'N/A'}</p>
-                  <p className="text-xs text-purple-300">
+                  <p className="text-xs text-gray-600">
                     {application.student?.emergencyContact?.relationship ? `(${application.student.emergencyContact.relationship})` : ''}
                   </p>
                 </div>
               </div>
               
                <div className="space-y-1 md:col-span-2">
-                <p className="text-sm text-purple-300 font-medium">Previous Education</p>
-                <p className="text-white font-semibold">{application.previousEducation || 'N/A'}</p>
+                <p className="text-sm text-gray-600 font-medium">Previous Education</p>
+                <p className="text-gray-900 font-semibold">{application.previousEducation || 'N/A'}</p>
               </div>
             </div>
           </div>
 
           {/* Application Info Section */}
-          <div className="bg-white/5 backdrop-blur-md rounded-xl p-6 border border-white/10">
-            <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-              <GraduationCap className="w-6 h-6 text-purple-400" />
+          <div className="bg-gray-50 rounded border border-gray-200 p-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <GraduationCap className="w-6 h-6 text-blue-600" />
               Application Details
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Desired Course */}
               <div className="space-y-1">
-                <p className="text-sm text-purple-300 font-medium">Desired Course</p>
-                <p className="text-white font-semibold">
+                <p className="text-sm text-gray-600 font-medium">Desired Course</p>
+                <p className="text-gray-900 font-semibold">
                   {application.desiredCourse || application.course?.title || 'N/A'}
                 </p>
               </div>
 
               {/* Application Date */}
               <div className="space-y-1">
-                <p className="text-sm text-purple-300 font-medium">Applied On</p>
-                <div className="flex items-center gap-2 text-white">
-                  <Calendar className="w-4 h-4 text-purple-400" />
+                <p className="text-sm text-gray-600 font-medium">Applied On</p>
+                <div className="flex items-center gap-2 text-gray-900">
+                  <Calendar className="w-4 h-4 text-blue-600" />
                   <span className="font-semibold">
                     {new Date(application.createdAt).toLocaleDateString('en-US', {
                       year: 'numeric',
@@ -142,7 +142,7 @@ const StudentProfileModal = ({ application, onClose }: StudentProfileModalProps)
           <div className="flex justify-end pt-4">
             <button
               onClick={onClose}
-              className="px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300"
+              className="px-6 py-3 bg-gray-200 text-gray-700 rounded font-semibold hover:bg-gray-300 transition-all"
             >
               Close
             </button>

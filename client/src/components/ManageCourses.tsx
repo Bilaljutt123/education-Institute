@@ -40,38 +40,31 @@ const ManageCourses = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white text-lg">Loading courses...</p>
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-700 text-lg">Loading courses...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-12 px-6">
-      {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-      </div>
-
-      <div className="relative max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-50 py-8 px-6">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-cyan-200">
+          <div className="bg-white rounded border border-gray-200 p-6 flex-1 mr-4">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
               Manage Courses
             </h1>
-            <p className="text-xl text-purple-200">
+            <p className="text-xl text-gray-600">
               Create, view, and manage all course offerings
             </p>
           </div>
           <button
             onClick={() => navigate('/create-course')}
-            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
+            className="px-6 py-3 bg-blue-600 text-white rounded font-semibold hover:bg-blue-700 transition-all inline-flex items-center gap-2 self-start mt-6"
           >
             <Plus className="w-5 h-5" />
             Add New Course
@@ -84,39 +77,39 @@ const ManageCourses = () => {
             {courses.map((course) => (
               <div
                 key={course._id}
-                className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6 hover:bg-white/15 transition-all duration-300"
+                className="bg-white rounded border border-gray-200 p-6 hover:border-blue-400 hover:shadow-md transition-all"
               >
                 {/* Course Header */}
                 <div className="flex items-start justify-between mb-4">
-                  <div className="p-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600">
+                  <div className="p-3 rounded bg-blue-600">
                     <BookOpen className="w-6 h-6 text-white" />
                   </div>
                   <button
                     onClick={() => setDeleteConfirm(course._id)}
-                    className="p-2 rounded-lg bg-red-500/20 border border-red-500/50 text-red-300 hover:bg-red-500/30 transition-all"
+                    className="p-2 rounded bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 transition-all"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
 
                 {/* Course Info */}
-                <h3 className="text-xl font-bold text-white mb-2">{course.title}</h3>
-                <p className="text-purple-200 text-sm mb-4 line-clamp-2">{course.description}</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{course.title}</h3>
+                <p className="text-gray-600 text-sm mb-4 line-clamp-2">{course.description}</p>
 
                 {/* Course Details */}
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2 text-purple-300">
+                    <div className="flex items-center gap-2 text-gray-600">
                       <Clock className="w-4 h-4" />
                       <span>{course.duration}</span>
                     </div>
-                    <div className="flex items-center gap-1 text-green-400 font-semibold">
+                    <div className="flex items-center gap-1 text-blue-600 font-semibold">
                       <DollarSign className="w-4 h-4" />
                       <span>{course.tuition}</span>
                     </div>
                   </div>
                   {course.instructor && (
-                    <p className="text-purple-300 text-xs">
+                    <p className="text-gray-600 text-xs">
                       Instructor: {course.instructor}
                     </p>
                   )}
@@ -124,20 +117,20 @@ const ManageCourses = () => {
 
                 {/* Delete Confirmation */}
                 {deleteConfirm === course._id && (
-                  <div className="mt-4 p-4 bg-red-500/20 border border-red-500/50 rounded-xl">
-                    <p className="text-red-200 text-sm mb-3">
+                  <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded">
+                    <p className="text-red-700 text-sm mb-3">
                       Delete this course? This will also remove all <strong>students and applications</strong> associated with it.
                     </p>
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleDelete(course._id)}
-                        className="flex-1 px-3 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
+                        className="flex-1 px-3 py-2 bg-red-600 text-white rounded text-sm font-medium hover:bg-red-700 transition-colors"
                       >
                         Yes, Delete
                       </button>
                       <button
                         onClick={() => setDeleteConfirm(null)}
-                        className="flex-1 px-3 py-2 bg-white/10 text-purple-200 rounded-lg text-sm font-medium hover:bg-white/20 transition-colors"
+                        className="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded text-sm font-medium hover:bg-gray-300 transition-colors"
                       >
                         Cancel
                       </button>
@@ -148,19 +141,19 @@ const ManageCourses = () => {
             ))}
           </div>
         ) : (
-          <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-12 text-center">
-            <div className="inline-flex p-6 rounded-full bg-purple-500/20 mb-4">
-              <BookOpen className="w-12 h-12 text-purple-300" />
+          <div className="bg-white rounded border border-gray-200 p-12 text-center">
+            <div className="inline-flex p-6 rounded-full bg-gray-100 mb-4">
+              <BookOpen className="w-12 h-12 text-gray-400" />
             </div>
-            <h3 className="text-2xl font-semibold text-white mb-2">
+            <h3 className="text-2xl font-semibold text-gray-900 mb-2">
               No courses available
             </h3>
-            <p className="text-purple-200 mb-6">
+            <p className="text-gray-600 mb-6">
               Get started by creating your first course
             </p>
             <button
               onClick={() => navigate('/create-course')}
-              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all inline-flex items-center gap-2"
+              className="px-6 py-3 bg-blue-600 text-white rounded font-semibold hover:bg-blue-700 transition-all inline-flex items-center gap-2"
             >
               <Plus className="w-5 h-5" />
               Create First Course
@@ -171,34 +164,34 @@ const ManageCourses = () => {
         {/* Stats */}
         {courses.length > 0 && (
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-purple-500/10 backdrop-blur-md border border-purple-500/30 rounded-xl p-6">
+            <div className="bg-blue-50 border border-blue-200 rounded p-6">
               <div className="flex items-center gap-3">
-                <BookOpen className="w-8 h-8 text-purple-400" />
+                <BookOpen className="w-8 h-8 text-blue-600" />
                 <div>
-                  <p className="text-purple-200 text-sm">Total Courses</p>
-                  <p className="text-white text-2xl font-bold">{courses.length}</p>
+                  <p className="text-blue-700 text-sm">Total Courses</p>
+                  <p className="text-blue-900 text-2xl font-bold">{courses.length}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-green-500/10 backdrop-blur-md border border-green-500/30 rounded-xl p-6">
+            <div className="bg-green-50 border border-green-200 rounded p-6">
               <div className="flex items-center gap-3">
-                <DollarSign className="w-8 h-8 text-green-400" />
+                <DollarSign className="w-8 h-8 text-green-600" />
                 <div>
-                  <p className="text-green-200 text-sm">Avg. Tuition</p>
-                  <p className="text-white text-2xl font-bold">
+                  <p className="text-green-700 text-sm">Avg. Tuition</p>
+                  <p className="text-green-900 text-2xl font-bold">
                     ${Math.round(courses.reduce((sum, c) => sum + c.tuition, 0) / courses.length)}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-cyan-500/10 backdrop-blur-md border border-cyan-500/30 rounded-xl p-6">
+            <div className="bg-gray-100 border border-gray-200 rounded p-6">
               <div className="flex items-center gap-3">
-                <Clock className="w-8 h-8 text-cyan-400" />
+                <Clock className="w-8 h-8 text-gray-600" />
                 <div>
-                  <p className="text-cyan-200 text-sm">Active Programs</p>
-                  <p className="text-white text-2xl font-bold">{courses.length}</p>
+                  <p className="text-gray-700 text-sm">Active Programs</p>
+                  <p className="text-gray-900 text-2xl font-bold">{courses.length}</p>
                 </div>
               </div>
             </div>

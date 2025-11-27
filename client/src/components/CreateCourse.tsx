@@ -1,7 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '@/utils/api';
-import { BookOpen, ArrowLeft, Plus } from 'lucide-react';
+import { Plus, ArrowLeft } from 'lucide-react';
 
 interface CourseFormData {
   title: string;
@@ -66,43 +66,36 @@ const CreateCourse = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-12 px-6">
-      {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-      </div>
-
-      <div className="relative max-w-3xl mx-auto">
+    <div className="min-h-screen bg-gray-50 py-8 px-6">
+      <div className="max-w-3xl mx-auto">
         {/* Back Button */}
         <button
           onClick={() => navigate('/manage-courses')}
-          className="mb-6 inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-purple-200 rounded-lg hover:bg-white/20 transition-all"
+          className="mb-6 inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition-all"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Courses
         </button>
 
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex p-4 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
+        <div className="mb-8 bg-white rounded border border-gray-200 p-6">
+          <div className="inline-flex p-4 rounded bg-blue-600 mb-4">
             <Plus className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-cyan-200">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Create New Course
           </h1>
-          <p className="text-xl text-purple-200">
+          <p className="text-xl text-gray-600">
             Fill out the form below to add a new course to the institution
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-8">
+        <div className="bg-white rounded border border-gray-200 p-8">
           <form onSubmit={onSubmit} className="space-y-6">
             {/* Title */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-purple-100">Course Title</label>
+              <label className="text-sm font-medium text-gray-700">Course Title</label>
               <input
                 type="text"
                 name="title"
@@ -110,13 +103,13 @@ const CreateCourse = () => {
                 onChange={onChange}
                 required
                 placeholder="e.g. Web Development Bootcamp"
-                className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
             </div>
 
             {/* Description */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-purple-100">Course Description</label>
+              <label className="text-sm font-medium text-gray-700">Course Description</label>
               <textarea
                 name="description"
                 value={description}
@@ -124,14 +117,14 @@ const CreateCourse = () => {
                 required
                 rows={4}
                 placeholder="Describe the course curriculum and objectives..."
-                className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 resize-none"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
               />
             </div>
 
             {/* Duration and Tuition Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-purple-100">Duration</label>
+                <label className="text-sm font-medium text-gray-700">Duration</label>
                 <input
                   type="text"
                   name="duration"
@@ -139,12 +132,12 @@ const CreateCourse = () => {
                   onChange={onChange}
                   required
                   placeholder="e.g. 3 Months"
-                  className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-purple-100">Tuition ($)</label>
+                <label className="text-sm font-medium text-gray-700">Tuition ($)</label>
                 <input
                   type="number"
                   name="tuition"
@@ -152,55 +145,55 @@ const CreateCourse = () => {
                   onChange={onChange}
                   required
                   placeholder="0"
-                  className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
             {/* Instructor */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-purple-100">Instructor (Optional)</label>
+              <label className="text-sm font-medium text-gray-700">Instructor (Optional)</label>
               <input
                 type="text"
                 name="instructor"
                 value={instructor}
                 onChange={onChange}
                 placeholder="e.g. Dr. Jane Smith"
-                className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
             </div>
 
             {/* Schedule */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-purple-100">Start Date</label>
+                <label className="text-sm font-medium text-gray-700">Start Date</label>
                 <input
                   type="date"
                   name="startDate"
                   value={startDate}
                   onChange={onChange}
                   required
-                  className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-purple-100">End Date</label>
+                <label className="text-sm font-medium text-gray-700">End Date</label>
                 <input
                   type="date"
                   name="endDate"
                   value={endDate}
                   onChange={onChange}
                   required
-                  className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
             {/* Error Message */}
             {error && (
-              <div className="bg-red-500/20 backdrop-blur-md border border-red-500/50 rounded-xl p-4">
-                <p className="text-sm text-red-200">{error}</p>
+              <div className="bg-red-50 border border-red-200 rounded p-4">
+                <p className="text-sm text-red-700">{error}</p>
               </div>
             )}
 
@@ -208,7 +201,7 @@ const CreateCourse = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 inline-flex items-center justify-center gap-2"
+              className="w-full px-6 py-4 bg-blue-600 text-white rounded font-semibold text-lg hover:bg-blue-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>

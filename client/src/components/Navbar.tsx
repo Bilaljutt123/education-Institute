@@ -14,21 +14,11 @@ interface NavbarProps {
 const Navbar = ({ onLogout }: NavbarProps) => {
   const { user } = useAuth();
   const location = useLocation();
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [applications, setApplications] = useState<ApplicationWithDetails[]>([]);
 
   // Check if we're on the landing page
   const isLandingPage = location.pathname === '/';
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Fetch applications for admin users
   useEffect(() => {
@@ -46,41 +36,18 @@ const Navbar = ({ onLogout }: NavbarProps) => {
     fetchApplications();
   }, [user, location]); // Refetch when location changes
 
-  const navbarClasses = isLandingPage
-    ? `fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-white/90 backdrop-blur-lg shadow-lg border-b border-gray-200'
-          : 'bg-transparent'
-      }`
-    : 'bg-gradient-to-r from-purple-900 via-purple-800 to-pink-900 shadow-lg border-b border-purple-700/50';
+  const navbarClasses = 'bg-white shadow-sm border-b border-gray-200';
 
   const linkClasses = (path: string) => {
     const isActive = location.pathname === path;
-    const baseClasses = 'px-4 py-2 rounded-full font-medium transition-all duration-300 inline-flex items-center gap-2';
+    const baseClasses = 'px-4 py-2 rounded font-medium transition-all duration-200 inline-flex items-center gap-2';
     
-    if (isLandingPage && !isScrolled) {
-      return `${baseClasses} ${
-        isActive
-          ? 'bg-white/20 backdrop-blur-md text-white'
-          : 'text-white hover:bg-white/10 hover:backdrop-blur-md'
-      }`;
-    } else if (isLandingPage && isScrolled) {
-      return `${baseClasses} ${
-        isActive
-          ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
-          : 'text-gray-700 hover:bg-gray-100'
-      }`;
-    } else {
-      return `${baseClasses} ${
-        isActive
-          ? 'bg-white/20 backdrop-blur-md text-white'
-          : 'text-purple-100 hover:bg-white/10 hover:backdrop-blur-md hover:text-white'
-      }`;
-    }
+    return `${baseClasses} ${
+      isActive
+        ? 'bg-blue-50 text-blue-700'
+        : 'text-gray-700 hover:bg-gray-100'
+    }`;
   };
-
-  const textColor = isLandingPage && !isScrolled ? 'text-white' : isLandingPage ? 'text-gray-900' : 'text-white';
-  const hoverColor = isLandingPage && !isScrolled ? 'hover:text-purple-200' : isLandingPage ? 'hover:text-purple-600' : 'hover:text-purple-200';
 
   return (
     <nav className={navbarClasses}>
@@ -90,12 +57,12 @@ const Navbar = ({ onLogout }: NavbarProps) => {
           {/* Logo */}
           <Link 
             to="/" 
-            className={`text-2xl font-bold ${textColor} ${hoverColor} transition-colors duration-300 flex items-center gap-2 group`}
+            className="text-2xl font-bold text-gray-900 hover:text-blue-700 transition-colors duration-300 flex items-center gap-2 group"
           >
-            <div className="p-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 group-hover:shadow-lg group-hover:shadow-purple-500/50 transition-all duration-300">
+            <div className="p-2 rounded bg-blue-600 group-hover:bg-blue-700 transition-colors">
               <GraduationCap className="w-6 h-6 text-white" />
             </div>
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+            <span className="text-blue-700">
               EduInstitute
             </span>
           </Link>
@@ -122,7 +89,7 @@ const Navbar = ({ onLogout }: NavbarProps) => {
                       <FileText className="w-4 h-4" />
                       Applications
                       {applications.filter(app => app.status === 'pending').length > 0 && (
-                        <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-r from-yellow-600 to-orange-600 border-2 border-purple-900 flex items-center justify-center text-[10px] font-bold text-white">
+                        <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-600 border-2 border-white flex items-center justify-center text-[10px] font-bold text-white">
                           {applications.filter(app => app.status === 'pending').length}
                         </span>
                       )}
@@ -138,7 +105,7 @@ const Navbar = ({ onLogout }: NavbarProps) => {
                 {/* Logout Button */}
                 <button
                   onClick={onLogout}
-                  className="ml-2 px-6 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full font-medium hover:shadow-lg hover:shadow-red-500/50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
+                  className="ml-2 px-6 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-700 transition-all duration-300 inline-flex items-center gap-2"
                 >
                   <LogOut className="w-4 h-4" />
                   Logout
@@ -157,7 +124,7 @@ const Navbar = ({ onLogout }: NavbarProps) => {
 
                 <Link 
                   to="/login"
-                  className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-medium hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
+                  className="px-6 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 transition-all duration-300"
                 >
                   Login
                 </Link>
@@ -168,7 +135,7 @@ const Navbar = ({ onLogout }: NavbarProps) => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`md:hidden p-2 rounded-lg ${textColor} ${hoverColor} transition-colors`}
+            className="md:hidden p-2 rounded text-gray-700 hover:bg-gray-100 transition-colors"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -176,13 +143,7 @@ const Navbar = ({ onLogout }: NavbarProps) => {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className={`md:hidden mt-4 py-4 rounded-2xl ${
-            isLandingPage && !isScrolled 
-              ? 'bg-white/10 backdrop-blur-lg border border-white/20' 
-              : isLandingPage 
-              ? 'bg-gray-50 border border-gray-200'
-              : 'bg-purple-800/50 backdrop-blur-lg border border-purple-700/50'
-          }`}>
+          <div className="md:hidden mt-4 py-4 rounded bg-white border border-gray-200">
             <div className="flex flex-col space-y-2 px-4">
               {user ? (
                 <>
@@ -214,7 +175,7 @@ const Navbar = ({ onLogout }: NavbarProps) => {
                         <FileText className="w-4 h-4" />
                         Applications
                         {applications.filter(app => app.status === 'pending').length > 0 && (
-                          <span className="ml-auto w-6 h-6 rounded-full bg-gradient-to-r from-yellow-600 to-orange-600 border-2 border-purple-900 flex items-center justify-center text-xs font-bold text-white">
+                          <span className="ml-auto w-6 h-6 rounded-full bg-red-600 border-2 border-white flex items-center justify-center text-xs font-bold text-white">
                             {applications.filter(app => app.status === 'pending').length}
                           </span>
                         )}
@@ -236,7 +197,7 @@ const Navbar = ({ onLogout }: NavbarProps) => {
                       onLogout();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full font-medium hover:shadow-lg transition-all duration-300 inline-flex items-center justify-center gap-2"
+                    className="px-6 py-3 bg-red-600 text-white rounded font-medium hover:bg-red-700 transition-all duration-300 inline-flex items-center justify-center gap-2"
                   >
                     <LogOut className="w-4 h-4" />
                     Logout
@@ -262,7 +223,7 @@ const Navbar = ({ onLogout }: NavbarProps) => {
 
                   <Link 
                     to="/login"
-                    className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-medium hover:shadow-lg transition-all duration-300 text-center"
+                    className="px-6 py-3 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 transition-all duration-300 text-center"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Login

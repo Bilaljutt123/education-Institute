@@ -1,37 +1,47 @@
-// middleware/auth.js
+// server/middleware/auth.js
 
 import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
 export const protect = async (req, res, next) => {
   let token;
 
-  // 1. Check for token in the 'Authorization' header
-  // The header should be in the format: "Bearer <token>"
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
-      // 2. Get token from header
+      // Get token from header
       token = req.headers.authorization.split(' ')[1];
+      console.log('Received Token:', token); // <-- ADD THIS LINE
 
-      // 3. Verify token
+      // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log('Decoded Token Payload:', decoded); // <-- ADD THIS LINE
 
-      // 4. Attach user payload to the request object
-      // In a real app, you might fetch the full user from the DB here
-      // For now, we just attach the user ID from the token
-      req.user = decoded.user;
+      // Fetch the full user from the database
+      req.user = await User.findById(decoded.user.id).select('-password');
+      console.log('User found in DB:', req.user); // <-- ADD THIS LINE
 
-      next(); // Proceed to the next middleware or route handler
+      if (!req.user) {
+        return res.status(401).json({ msg: 'User not found' });
+      }
+
+      next();
     } catch (error) {
-      console.error(error);
+      console.error('JWT Verification Error:', error.message); // <-- CHANGE THIS LINE
       res.status(401).json({ msg: 'Token is not valid' });
     }
   }
 
-  // 5. If no token is found
   if (!token) {
+    console.log('No token found in headers'); // <-- ADD THIS LINE
     return res.status(401).json({ msg: 'No token, authorization denied' });
+  }
+};
+
+export const admin = (req, res, next) => {
+  console.log('Checking admin role for user:', req.user); // <-- ADD THIS LINE
+  if (req.user && req.user.role === 'admin') {
+    next();
+  } else {
+    res.status(403).json({ msg: 'Access denied. Admin role required.' });
   }
 };

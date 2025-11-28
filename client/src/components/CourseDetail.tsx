@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '@/utils/api';
-import { BookOpen, Clock, DollarSign, User, Calendar, ArrowLeft } from 'lucide-react';
+import { BookOpen, Clock, DollarSign, User, Calendar, ArrowLeft, Building2 } from 'lucide-react';
+import type { Department } from '@/types';
 
 interface Course {
   _id: string;
@@ -10,6 +11,7 @@ interface Course {
   duration: string;
   tuition: number;
   instructor?: string;
+  department?: Department | string;
   schedule?: {
     startDate: string;
     endDate: string;
@@ -127,6 +129,22 @@ const CourseDetail = () => {
                 <div>
                   <p className="text-gray-600 text-sm">Instructor</p>
                   <p className="text-gray-900 text-xl font-semibold">{course.instructor}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Department Card */}
+          {course.department && typeof course.department !== 'string' && (
+            <div className="bg-white rounded border border-gray-200 p-6 md:col-span-2">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-3 rounded bg-blue-50">
+                  <Building2 className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm">Department</p>
+                  <p className="text-gray-900 text-xl font-semibold">{course.department.name}</p>
+                  <p className="text-gray-500 text-sm">{course.department.description}</p>
                 </div>
               </div>
             </div>

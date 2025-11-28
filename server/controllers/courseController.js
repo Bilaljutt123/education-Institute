@@ -21,7 +21,11 @@ export const createCourse = async (req, res) => {
 // @access  Public (or Private if you want to restrict it)
 export const getCourses = async (req, res) => {
   try {
-    const courses = await Course.find();
+    let query = {};
+    if (req.query.department) {
+      query.department = req.query.department;
+    }
+    const courses = await Course.find(query).populate('department', 'name code description');
     res.status(200).json({ success: true, count: courses.length, data: courses });
   } catch (err) {
     console.error(err.message);
@@ -34,7 +38,7 @@ export const getCourses = async (req, res) => {
 // @access  Public
 export const getCourseById = async (req, res) => {
   try {
-    const course = await Course.findById(req.params.id);
+    const course = await Course.findById(req.params.id).populate('department', 'name code description');
     if (!course) {
       return res.status(404).json({ msg: 'Course not found' });
     }
@@ -80,9 +84,11 @@ export const deleteCourse = async (req, res) => {
     // Delete the course
     await Course.findByIdAndDelete(req.params.id);
 
-    // Delete all applications associated with this course
-    // Note: Applications store the course title in 'desiredCourse'
-    await Application.deleteMany({ desiredCourse: course.title });
+    // Remove this course from any applications that include it
+    await Application.updateMany(
+      { courses: req.params.id },
+      { $pull: { courses: req.params.id } }
+    );
 
     res.status(200).json({ success: true, data: {} }); // Or send a success message
   } catch (err) {

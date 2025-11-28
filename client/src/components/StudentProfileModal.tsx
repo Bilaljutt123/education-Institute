@@ -113,11 +113,12 @@ const StudentProfileModal = ({ application, onClose }: StudentProfileModalProps)
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Desired Course */}
               <div className="space-y-1">
-                <p className="text-sm text-gray-600 font-medium">Desired Course</p>
+                <p className="text-sm text-gray-600 font-medium">Desired Courses</p>
                 <p className="text-gray-900 font-semibold">
-                  {application.desiredCourse || application.course?.title || 'N/A'}
+                  {application.courses && application.courses.length > 0
+                    ? application.courses.map((c) => c.title).join(', ')
+                    : 'N/A'}
                 </p>
               </div>
 

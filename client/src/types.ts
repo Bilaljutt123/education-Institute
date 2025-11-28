@@ -24,6 +24,32 @@ export interface User {
   profileCompleted?: boolean;
 }
 
+// Type for a Department object
+export interface Department {
+  _id: string;
+  name: string;
+  code: string;
+  description: string;
+  head?: string;
+  createdAt: string;
+}
+
+// Type for a Course object
+export interface Course {
+  _id: string;
+  title: string;
+  description: string;
+  duration: string;
+  tuition: number;
+  instructor?: string;
+  department: string | Department; // Can be ID or populated Department object
+  schedule?: {
+    startDate: string;
+    endDate: string;
+  };
+  createdAt: string;
+}
+
 // Type for an Application object
 export interface Application {
   _id: string;
@@ -34,7 +60,8 @@ export interface Application {
   phone: string;
   dateOfBirth: string;
   previousEducation: string;
-  desiredCourse: string;
+  department: string | Department;
+  courses: (string | Course)[];
   status: 'pending' | 'accepted' | 'rejected';
   createdAt: string;
 }
@@ -60,27 +87,9 @@ export interface ApplicationWithDetails {
       phone?: string;
     };
   };
-  course?: {
-    _id: string;
-    title: string;
-  };
-  desiredCourse?: string; // Fallback if course is stored as string
+  department?: Department;
+  courses?: Course[];
   status: 'pending' | 'accepted' | 'rejected';
-  createdAt: string;
-}
-
-// Type for a Course object
-export interface Course {
-  _id: string;
-  title: string;
-  description: string;
-  duration: string;
-  tuition: number;
-  instructor?: string;
-  schedule?: {
-    startDate: string;
-    endDate: string;
-  };
   createdAt: string;
 }
 

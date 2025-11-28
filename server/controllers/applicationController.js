@@ -38,7 +38,10 @@ export const submitApplication = async (req, res) => {
 export const getApplications = async (req, res) => {
   try {
     // We don't need to fetch the user here because the 'admin' middleware will have already run.
-    const applications = await Application.find().populate('student', 'name email address emergencyContact');
+    const applications = await Application.find()
+      .populate('student', 'name email address emergencyContact')
+      .populate('department', 'name code')
+      .populate('courses', 'title code');
     res.status(200).json({ success: true, count: applications.length, data: applications });
   } catch (err) {
     console.error(err.message);
@@ -76,7 +79,10 @@ export const updateApplicationStatus = async (req, res) => {
 export const getMyApplication = async (req, res) => {
   try {
     // Find ALL applications where the 'student' field matches the logged-in user's ID
-    const applications = await Application.find({ student: req.user.id }).sort({ createdAt: -1 });
+    const applications = await Application.find({ student: req.user.id })
+      .sort({ createdAt: -1 })
+      .populate('department', 'name code')
+      .populate('courses', 'title code');
 
     // Return empty array if no applications found (instead of 404)
     res.status(200).json({ success: true, data: applications });

@@ -80,5 +80,32 @@ export const deleteApplication = async (id: string): Promise<ApiResponse<void>> 
   return response.data;
 };
 
+// --- DEPARTMENT API FUNCTIONS ---
+
+export const getDepartments = async (): Promise<ApiResponse<any[]>> => {
+  const response = await api.get<ApiResponse<any[]>>('/departments');
+  return response.data;
+};
+
+export const getDepartment = async (id: string): Promise<ApiResponse<any>> => {
+  const response = await api.get<ApiResponse<any>>(`/departments/${id}`);
+  return response.data;
+};
+
+export const createDepartment = async (data: any): Promise<ApiResponse<any>> => {
+  const response = await api.post<ApiResponse<any>>('/departments', data);
+  return response.data;
+};
+
+export const updateDepartment = async (id: string, data: any): Promise<ApiResponse<any>> => {
+  const response = await api.put<ApiResponse<any>>(`/departments/${id}`, data);
+  return response.data;
+};
+
+export const deleteDepartment = async (id: string): Promise<ApiResponse<void>> => {
+  const response = await api.delete<ApiResponse<void>>(`/departments/${id}`);
+  return response.data;
+};
+
 // Named export for axios instance
 export { api };

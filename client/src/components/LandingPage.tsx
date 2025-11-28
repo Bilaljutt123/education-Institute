@@ -84,10 +84,10 @@ const LandingPage = () => {
               </Link>
               
               <Link
-                to="/login"
+                to="/services"
                 className="px-8 py-4 bg-blue-600 border-2 border-blue-500 rounded font-semibold text-lg hover:bg-blue-800 transition-all duration-300"
               >
-                Sign In
+                View Programs
               </Link>
             </div>
           </div>
@@ -207,6 +207,13 @@ const LandingPage = () => {
             >
               Create Free Account
               <ArrowRight className="w-5 h-5" />
+            </Link>
+            
+            <Link
+              to="/blog"
+              className="px-8 py-4 bg-white text-blue-600 border-2 border-blue-600 rounded font-semibold text-lg hover:bg-blue-50 transition-all duration-300 inline-flex items-center justify-center gap-2"
+            >
+              Read Our Blog
             </Link>
           </div>
         </div>

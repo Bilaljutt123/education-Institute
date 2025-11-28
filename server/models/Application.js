@@ -33,10 +33,15 @@ const ApplicationSchema = new mongoose.Schema({
     type: String,
     required: [true],
   },
-  desiredCourse: {
-    type: String,
-    required: [true],
+  department: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Department',
+    required: [true, 'Please select a department'],
   },
+  courses: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Course',
+  }],
   status: {
     type: String,
     enum: ['pending', 'accepted', 'rejected'],

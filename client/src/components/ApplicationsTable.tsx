@@ -177,7 +177,19 @@ const ApplicationsTable = () => {
                     <tr key={application._id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 text-gray-900 font-medium">{application.firstName} {application.lastName}</td>
                       <td className="px-6 py-4 text-gray-600">{application.email}</td>
-                      <td className="px-6 py-4 text-gray-600">{application.desiredCourse || application.course?.title || 'N/A'}</td>
+                      <td className="px-6 py-4 text-gray-600">
+                        {application.courses && application.courses.length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {application.courses.map(c => (
+                              <span key={c._id} className="inline-flex items-center px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-xs">
+                                {c.title}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          'N/A'
+                        )}
+                      </td>
                       <td className="px-6 py-4">{getStatusBadge(application.status)}</td>
                       <td className="px-6 py-4 text-gray-600">
                         {new Date(application.createdAt).toLocaleDateString('en-US', {

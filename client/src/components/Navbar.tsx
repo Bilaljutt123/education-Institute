@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link, useLocation } from 'react-router-dom';
-import { GraduationCap, Menu, X, LogOut, LayoutDashboard, FileText, BookOpen, User } from 'lucide-react';
+import { GraduationCap, Menu, X, LogOut, LayoutDashboard, FileText, BookOpen, User, Building2 } from 'lucide-react';
 import { getApplicationsWithDetails } from '@/utils/api';
 import type { ApplicationWithDetails } from '@/types';
 
@@ -82,6 +82,13 @@ const Navbar = ({ onLogout }: NavbarProps) => {
                   Profile
                 </Link>
 
+                {user.role !== "admin" && (
+                  <Link to="/departments" className={linkClasses('/departments')}>
+                    <Building2 className="w-4 h-4" />
+                    Departments
+                  </Link>
+                )}
+
                 {/* Admin-only links */}
                 {user.role === "admin" && (
                   <>
@@ -98,6 +105,11 @@ const Navbar = ({ onLogout }: NavbarProps) => {
                     <Link to="/manage-courses" className={linkClasses('/manage-courses')}>
                       <BookOpen className="w-4 h-4" />
                       Courses
+                    </Link>
+
+                    <Link to="/manage-departments" className={linkClasses('/manage-departments')}>
+                      <Building2 className="w-4 h-4" />
+                      Departments
                     </Link>
                   </>
                 )}
@@ -116,6 +128,14 @@ const Navbar = ({ onLogout }: NavbarProps) => {
                 {/* Public links when NOT logged in */}
                 <Link to="/" className={linkClasses('/')}>
                   Home
+                </Link>
+
+                <Link to="/services" className={linkClasses('/services')}>
+                  Services
+                </Link>
+
+                <Link to="/blog" className={linkClasses('/blog')}>
+                  Blog
                 </Link>
 
                 <Link to="/register" className={linkClasses('/register')}>
@@ -165,6 +185,17 @@ const Navbar = ({ onLogout }: NavbarProps) => {
                     Profile
                   </Link>
 
+                  {user.role !== "admin" && (
+                    <Link 
+                      to="/departments" 
+                      className={`${linkClasses('/departments')} justify-start`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <Building2 className="w-4 h-4" />
+                      Departments
+                    </Link>
+                  )}
+
                   {user.role === "admin" && (
                     <>
                       <Link 
@@ -189,6 +220,15 @@ const Navbar = ({ onLogout }: NavbarProps) => {
                         <BookOpen className="w-4 h-4" />
                         Courses
                       </Link>
+
+                      <Link 
+                        to="/manage-departments" 
+                        className={`${linkClasses('/manage-departments')} justify-start`}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <Building2 className="w-4 h-4" />
+                        Departments
+                      </Link>
                     </>
                   )}
 
@@ -211,6 +251,22 @@ const Navbar = ({ onLogout }: NavbarProps) => {
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Home
+                  </Link>
+
+                  <Link 
+                    to="/services" 
+                    className={`${linkClasses('/services')} justify-start`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Services
+                  </Link>
+
+                  <Link 
+                    to="/blog" 
+                    className={`${linkClasses('/blog')} justify-start`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Blog
                   </Link>
 
                   <Link 

@@ -25,6 +25,11 @@ const CourseSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  department: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Department',
+    required: [true, 'Please add a department'],
+  },
   schedule: {
     startDate: {
       type: Date,

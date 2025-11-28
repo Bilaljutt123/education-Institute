@@ -1,5 +1,5 @@
 import type { Course } from '@/types';
-import { BookOpen, Clock, User } from 'lucide-react';
+import { BookOpen, Clock, User, Building2 } from 'lucide-react';
 
 interface CourseCardProps {
   course: Course;
@@ -31,6 +31,14 @@ const CourseCard = ({ course, onCourseClick }: CourseCardProps) => {
       <p className="text-gray-600 text-sm mb-4 line-clamp-2">
         {course.description}
       </p>
+
+      {/* Department Badge */}
+      {course.department && typeof course.department !== 'string' && (
+        <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-blue-50 text-blue-700 text-xs font-medium border border-blue-100 mb-4">
+          <Building2 className="w-3 h-3" />
+          {course.department.name}
+        </div>
+      )}
 
       {/* Course Details */}
       <div className="space-y-2">

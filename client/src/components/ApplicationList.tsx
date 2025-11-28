@@ -3,7 +3,7 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import type { Application } from '@/types';
+import type { Application, Course } from '@/types';
 
 interface ApplicationListProps {
   // We will pass the user's applications as a prop
@@ -20,7 +20,13 @@ const ApplicationList = ({ applications }: ApplicationListProps) => {
       {applications.map((app) => (
         <Card key={app._id} className="mb-4 bg-white border border-gray-200">
           <CardHeader>
-            <CardTitle className="text-gray-900">{app.desiredCourse}</CardTitle>
+            <CardTitle className="text-gray-900">
+              {Array.isArray(app.courses) && app.courses.length > 0
+                ? typeof app.courses[0] === 'string'
+                  ? app.courses.join(', ')
+                  : app.courses.map((c) => (c as Course).title).join(', ')
+                : 'No courses'}
+            </CardTitle>
               <CardDescription className="text-gray-600">
                 Status: <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded ${
                   app.status === 'pending'

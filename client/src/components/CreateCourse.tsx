@@ -1,6 +1,7 @@
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { useState, useEffect, type ChangeEvent, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '@/utils/api';
+import { api, getDepartments } from '@/utils/api';
+import type { Department } from '@/types';
 import { Plus, ArrowLeft } from 'lucide-react';
 
 interface CourseFormData {
@@ -9,6 +10,7 @@ interface CourseFormData {
   duration: string;
   tuition: number;
   instructor: string;
+  department: string;
   schedule: {
     startDate: string;
     endDate: string;
@@ -23,18 +25,32 @@ const CreateCourse = () => {
     duration: '',
     tuition: 0,
     instructor: '',
+    department: '',
     schedule: {
       startDate: '',
       endDate: '',
     },
   });
+  const [departments, setDepartments] = useState<Department[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { title, description, duration, tuition, instructor } = formData;
+  const { title, description, duration, tuition, instructor, department } = formData;
   const { startDate, endDate } = formData.schedule;
 
-  const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const res = await getDepartments();
+        setDepartments(res.data);
+      } catch (err) {
+        console.error('Could not fetch departments:', err);
+      }
+    };
+    fetchDepartments();
+  }, []);
+
+  const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     
     if (name === 'startDate' || name === 'endDate') {
@@ -69,19 +85,22 @@ const CreateCourse = () => {
     <div className="min-h-screen bg-gray-50 py-8 px-6">
       <div className="max-w-3xl mx-auto">
         {/* Back Button */}
-        <button
+       <div className='flex justify-between'>
+         <button
           onClick={() => navigate('/manage-courses')}
           className="mb-6 inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition-all"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Courses
         </button>
+        <div className="inline-flex p-4 rounded bg-blue-600 mb-4">
+            <Plus className="w-8 h-8 text-white" />
+          </div>
+       </div>
 
         {/* Header */}
         <div className="mb-8 bg-white rounded border border-gray-200 p-6">
-          <div className="inline-flex p-4 rounded bg-blue-600 mb-4">
-            <Plus className="w-8 h-8 text-white" />
-          </div>
+          
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Create New Course
           </h1>
@@ -105,6 +124,30 @@ const CreateCourse = () => {
                 placeholder="e.g. Web Development Bootcamp"
                 className="w-full px-4 py-3 bg-white border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
+            </div>
+
+            {/* Department Selector */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Department</label>
+              <select
+                name="department"
+                value={department}
+                onChange={onChange}
+                required
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              >
+                <option value="">Select a Department</option>
+                {departments.map((dept) => (
+                  <option key={dept._id} value={dept._id}>
+                    {dept.name} ({dept.code})
+                  </option>
+                ))}
+              </select>
+              {departments.length === 0 && (
+                <p className="text-xs text-red-500 mt-1">
+                  No departments found. Please create a department first.
+                </p>
+              )}
             </div>
 
             {/* Description */}

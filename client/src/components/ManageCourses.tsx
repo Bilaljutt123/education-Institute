@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import type { Course } from '@/types';
 import { api, getCourses } from '@/utils/api';
-import { BookOpen, Plus, Trash2, DollarSign, Clock } from 'lucide-react';
+import { BookOpen, Plus, Trash2, DollarSign, Clock, Building2 } from 'lucide-react';
 
 const ManageCourses = () => {
   const { user } = useAuth();
@@ -98,6 +98,14 @@ const ManageCourses = () => {
 
                 {/* Course Details */}
                 <div className="space-y-2 mb-4">
+                  {/* Department Badge */}
+                  {course.department && typeof course.department !== 'string' && (
+                    <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-blue-50 text-blue-700 text-xs font-medium border border-blue-100 mb-2">
+                      <Building2 className="w-3 h-3" />
+                      {course.department.name}
+                    </div>
+                  )}
+
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2 text-gray-600">
                       <Clock className="w-4 h-4" />

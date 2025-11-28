@@ -15,6 +15,12 @@ import CourseDetail from './components/CourseDetail';
 import StudentProfile from './components/StudentProfile';
 import LandingPage from './components/LandingPage';
 import MyCourse from './components/MyCourse';
+import ManageDepartments from './components/ManageDepartments';
+import CreateDepartment from './components/CreateDepartment';
+import DepartmentList from './components/DepartmentList';
+import DepartmentDetail from './components/DepartmentDetail';
+import Blog from './components/Blog';
+import Services from './components/Services';
 
 function AppContent() {
   return (
@@ -25,6 +31,8 @@ function AppContent() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/services" element={<Services />} />
 
           {/* Private Routes */}
           <Route element={<PrivateRoute />}>
@@ -36,6 +44,10 @@ function AppContent() {
             <Route path="/create-course" element={<CreateCourse />} />
             <Route path="/courses/:id" element={<CourseDetail />} />
             <Route path="/my-courses/:courseTitle" element={<MyCourse />} />
+            <Route path="/departments" element={<DepartmentList />} />
+            <Route path="/departments/:id" element={<DepartmentDetail />} />
+            <Route path="/manage-departments" element={<ManageDepartments />} />
+            <Route path="/create-department" element={<CreateDepartment />} />
           </Route>
         </Routes>
       </Layout>

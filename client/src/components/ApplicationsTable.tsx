@@ -166,76 +166,109 @@ const ApplicationsTable = () => {
                   <tr className="border-b border-gray-200 bg-gray-50">
                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Student</th>
                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Email</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Course</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Applied On</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Applied Courses</th>
                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {filteredApplications.map((application) => (
-                    <tr key={application._id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 text-gray-900 font-medium">{application.firstName} {application.lastName}</td>
-                      <td className="px-6 py-4 text-gray-600">{application.email}</td>
-                      <td className="px-6 py-4 text-gray-600">
-                        {application.courses && application.courses.length > 0 ? (
-                          <div className="flex flex-wrap gap-1">
-                            {application.courses.map(c => (
-                              <span key={c._id} className="inline-flex items-center px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-xs">
-                                {c.title}
-                              </span>
-                            ))}
-                          </div>
-                        ) : (
-                          'N/A'
-                        )}
-                      </td>
-                      <td className="px-6 py-4">{getStatusBadge(application.status)}</td>
-                      <td className="px-6 py-4 text-gray-600">
-                        {new Date(application.createdAt).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                        })}
-                      </td>
+                  {Object.values(
+                    filteredApplications.reduce((acc, app) => {
+                      const studentId = (typeof app.student === 'object' && app.student) ? app.student._id : (app.student || `unknown-${app._id}`);
+                      if (!acc[studentId]) {
+                        acc[studentId] = {
+                          student: app.student,
+                          firstName: app.firstName,
+                          lastName: app.lastName,
+                          email: app.email,
+                          applications: []
+                        };
+                      }
+                      acc[studentId].applications.push(app);
+                      return acc;
+                    }, {} as Record<string, { student: any, firstName: string, lastName: string, email: string, applications: ApplicationWithDetails[] }>)
+                  ).map((studentGroup) => (
+                    <tr key={typeof studentGroup.student === 'object' ? studentGroup.student._id : Math.random()} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 text-gray-900 font-medium">{studentGroup.firstName} {studentGroup.lastName}</td>
+                      <td className="px-6 py-4 text-gray-600">{studentGroup.email}</td>
                       <td className="px-6 py-4">
-                        <div className="flex gap-2">
-                          {/* View Profile Button */}
+                        <div className="space-y-2">
+                          {studentGroup.applications.map(app => (
+                            <div key={app._id} className="flex items-center justify-between bg-gray-50 p-2 rounded border border-gray-200">
+                              <span className="text-sm font-medium text-gray-700">
+                                {app.courses && app.courses.length > 0 ? app.courses[0].title : 'Unknown Course'}
+                              </span>
+                              <div className="flex items-center gap-2">
+                                {getStatusBadge(app.status)}
+                                {app.status === 'pending' && (
+                                  <div className="flex gap-1">
+                                    <button 
+                                      onClick={() => updateStatus(app._id, 'accepted')}
+                                      className="p-1 bg-green-100 text-green-700 rounded hover:bg-green-200"
+                                      title="Accept Course"
+                                    >
+                                      <CheckCircle className="w-4 h-4" />
+                                    </button>
+                                    <button 
+                                      onClick={() => updateStatus(app._id, 'rejected')}
+                                      className="p-1 bg-red-100 text-red-700 rounded hover:bg-red-200"
+                                      title="Reject Course"
+                                    >
+                                      <XCircle className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                )}
+                                <button
+                                  onClick={() => handleDelete(app._id)}
+                                  className="p-1 bg-gray-100 text-gray-600 rounded hover:bg-gray-200"
+                                  title="Delete Application"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 align-top">
+                        <div className="flex flex-col gap-2">
                           <button
-                            onClick={() => setSelectedStudent(application)}
-                            className="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 transition-all inline-flex items-center gap-2"
-                            title="View Student Profile"
+                            onClick={() => setSelectedStudent(studentGroup.applications[0])}
+                            className="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 transition-all inline-flex items-center gap-2 justify-center"
                           >
                             <Eye className="w-4 h-4" />
-                            Profile
+                            View Profile
                           </button>
-
-                          {application.status === 'pending' && (
+                          
+                          {studentGroup.applications.some(app => app.status === 'pending') && (
                             <>
                               <button
-                                onClick={() => updateStatus(application._id, 'accepted')}
-                                className="px-4 py-2 bg-green-600 text-white rounded font-medium hover:bg-green-700 transition-all inline-flex items-center gap-2"
+                                onClick={() => {
+                                  if(window.confirm(`Accept all ${studentGroup.applications.filter(a => a.status === 'pending').length} pending applications for this student?`)) {
+                                    studentGroup.applications
+                                      .filter(a => a.status === 'pending')
+                                      .forEach(a => updateStatus(a._id, 'accepted'));
+                                  }
+                                }}
+                                className="px-4 py-2 bg-green-600 text-white rounded font-medium hover:bg-green-700 transition-all inline-flex items-center gap-2 justify-center"
                               >
                                 <CheckCircle className="w-4 h-4" />
-                                Accept
+                                Accept All
                               </button>
                               <button
-                                onClick={() => updateStatus(application._id, 'rejected')}
-                                className="px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-700 transition-all inline-flex items-center gap-2"
+                                onClick={() => {
+                                   if(window.confirm(`Reject all ${studentGroup.applications.filter(a => a.status === 'pending').length} pending applications for this student?`)) {
+                                    studentGroup.applications
+                                      .filter(a => a.status === 'pending')
+                                      .forEach(a => updateStatus(a._id, 'rejected'));
+                                  }
+                                }}
+                                className="px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-700 transition-all inline-flex items-center gap-2 justify-center"
                               >
                                 <XCircle className="w-4 h-4" />
-                                Reject
+                                Reject All
                               </button>
                             </>
                           )}
-                          <button
-                            onClick={() => handleDelete(application._id)}
-                            className="px-4 py-2 bg-gray-600 text-white rounded font-medium hover:bg-gray-700 transition-all inline-flex items-center gap-2"
-                            title="Delete Application"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                            {application.status !== 'pending' && 'Delete'}
-                          </button>
                         </div>
                       </td>
                     </tr>

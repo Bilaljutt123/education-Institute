@@ -151,6 +151,8 @@ const ApplicationForm = () => {
     setFormData(prev => ({ ...prev, courses: [] }));
   }, [department]);
 
+  const [lockedDepartment, setLockedDepartment] = useState<string | null>(null);
+
   // Fetch user's applications
   useEffect(() => {
     const fetchMyApplications = async () => {
@@ -158,12 +160,14 @@ const ApplicationForm = () => {
         const res = await getMyApplications();
         setMyApplications(res.data);
         
-        // Extract course IDs for accepted applications
-        // Note: The backend now returns 'courses' array in application
-        // But existing applications might still have 'desiredCourse' string?
-        // No, I updated the model. Old data might be broken or I need to handle it.
-        // For new applications, 'courses' will be populated.
-        
+        // Check for active applications to lock department
+        const activeApp = res.data.find((app: any) => app.status !== 'rejected');
+        if (activeApp) {
+            const activeDeptId = typeof activeApp.department === 'object' ? activeApp.department._id : activeApp.department;
+            setFormData(prev => ({ ...prev, department: activeDeptId }));
+            setLockedDepartment(activeDeptId);
+        }
+
         const enrolledIds: string[] = [];
         res.data.forEach((app: any) => {
           if (app.status === 'accepted') {
@@ -315,12 +319,18 @@ const ApplicationForm = () => {
               <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
                 <Building2 className="w-4 h-4" /> Select Department
               </label>
+              {lockedDepartment && (
+                <p className="text-sm text-yellow-600 bg-yellow-50 p-2 rounded border border-yellow-200 mb-2">
+                  Note: You are currently restricted to the selected department because you have active applications.
+                </p>
+              )}
               <select
                 name="department"
                 value={department}
                 onChange={onChange}
                 required
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={!!lockedDepartment}
+                className={`w-full px-4 py-3 bg-white border border-gray-300 rounded text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 ${lockedDepartment ? 'bg-gray-100 cursor-not-allowed' : ''}`}
               >
                 <option value="">-- Choose a Department --</option>
                 {departments.map(dept => (

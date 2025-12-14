@@ -25,9 +25,17 @@ const ManageGPA = () => {
           getDepartments()
         ]);
         
-        // Filter only accepted students
-        const acceptedStudents = appsRes.data.filter(app => app.status === 'accepted');
-        setStudents(acceptedStudents);
+        // Filter only accepted students and deduplicate by student ID
+        const acceptedApps = appsRes.data.filter(app => app.status === 'accepted');
+        
+        const uniqueStudentsMap = new Map();
+        acceptedApps.forEach(app => {
+            if (app.student && typeof app.student === 'object' && !uniqueStudentsMap.has(app.student._id)) {
+                uniqueStudentsMap.set(app.student._id, app);
+            }
+        });
+        
+        setStudents(Array.from(uniqueStudentsMap.values()));
         setDepartments(deptsRes.data);
       } catch (err) {
         console.error('Error fetching data:', err);

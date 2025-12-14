@@ -53,7 +53,7 @@ const ManageDepartments = () => {
     <div className="min-h-screen bg-gray-50 py-8 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-8 flex-wrap">
           <div className="bg-white rounded border border-gray-200 p-6 flex-1 mr-4">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               Manage Departments
@@ -61,7 +61,7 @@ const ManageDepartments = () => {
             <p className="text-xl text-gray-600">
               Oversee academic departments and their details
             </p>
-          </div>
+          </div >
           <button
             onClick={() => navigate('/create-department')}
             className="px-6 py-3 bg-blue-600 text-white rounded font-semibold hover:bg-blue-700 transition-all inline-flex items-center gap-2 self-start mt-6"

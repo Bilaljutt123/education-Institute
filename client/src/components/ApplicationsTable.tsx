@@ -173,7 +173,7 @@ const ApplicationsTable = () => {
                 <tbody className="divide-y divide-gray-200">
                   {Object.values(
                     filteredApplications.reduce((acc, app) => {
-                      const studentId = typeof app.student === 'object' ? app.student._id : app.student;
+                      const studentId = (typeof app.student === 'object' && app.student) ? app.student._id : (app.student || `unknown-${app._id}`);
                       if (!acc[studentId]) {
                         acc[studentId] = {
                           student: app.student,

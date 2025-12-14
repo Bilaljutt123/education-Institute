@@ -113,3 +113,13 @@ export interface ApiResponse<T> {
   data: T;
   msg?: string;
 }
+
+// Type for GPA object
+export interface GPA {
+  _id: string;
+  student: string | User;
+  department: string | Department;
+  semester: number;
+  gpa: number;
+  createdAt: string;
+}

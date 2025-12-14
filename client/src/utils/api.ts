@@ -107,5 +107,17 @@ export const deleteDepartment = async (id: string): Promise<ApiResponse<void>> =
   return response.data;
 };
 
+// --- GPA API FUNCTIONS ---
+
+export const addOrUpdateGPA = async (data: { studentId: string; departmentId: string; semester: number; gpa: number }): Promise<ApiResponse<any>> => {
+  const response = await api.post<ApiResponse<any>>('/gpa', data);
+  return response.data;
+};
+
+export const getStudentGPA = async (studentId: string): Promise<ApiResponse<any[]>> => {
+  const response = await api.get<ApiResponse<any[]>>(`/gpa/student/${studentId}`);
+  return response.data;
+};
+
 // Named export for axios instance
 export { api };

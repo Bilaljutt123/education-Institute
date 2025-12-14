@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, User, ArrowRight, Tag, Clock, TrendingUp } from 'lucide-react';
+import Carousel from './Carousel';
 
 interface BlogPost {
   id: number;
@@ -16,6 +17,24 @@ interface BlogPost {
 
 const Blog = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
+  const slides = [
+    {
+      image: '/images/hero_library_study_1765725147090.png',
+      title: 'News & Articles',
+      description: 'Stay updated with the latest happenings, achievements, and stories from our vibrant academic community.',
+    },
+    {
+      image: '/images/hero_lecture_hall_1765725170900.png',
+      title: 'Faculty Insights',
+      description: 'Read about groundbreaking research and expert opinions from our distinguished faculty members.',
+    },
+    {
+      image: '/images/hero_campus_modern_1765725127334.png',
+      title: 'Student Life',
+      description: 'Discover the exciting events, clubs, and activities that make our campus life unique.',
+    }
+  ];
 
   // Mock blog data - In production, fetch from backend
   const blogPosts: BlogPost[] = [
@@ -113,21 +132,8 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 mb-4">
-            <TrendingUp className="w-6 h-6" />
-            <span className="text-blue-100 font-medium">Latest Updates</span>
-          </div>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            News & Articles
-          </h1>
-          <p className="text-xl text-blue-100 max-w-3xl">
-            Stay updated with the latest happenings, achievements, and stories from our vibrant academic community.
-          </p>
-        </div>
-      </div>
+      {/* Hero Carousel */}
+      <Carousel slides={slides} />
 
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Featured Posts */}

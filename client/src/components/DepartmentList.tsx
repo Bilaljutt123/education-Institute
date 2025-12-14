@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDepartments } from '@/utils/api';
 import type { Department } from '@/types';
-import { Building2, ArrowRight } from 'lucide-react';
+import { Building2, ArrowRight, ArrowLeft } from 'lucide-react';
 
 const DepartmentList = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -37,7 +37,14 @@ const DepartmentList = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 relative">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span className="font-medium">Back to Dashboard</span>
+          </button>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Academic Departments</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Explore our diverse range of academic departments and find the program that fits your career goals.

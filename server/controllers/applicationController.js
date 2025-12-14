@@ -15,13 +15,41 @@ export const submitApplication = async (req, res) => {
       return res.status(401).json({ msg: 'User not found' });
     }
 
-    // REMOVED: Check for existing application - now students can submit multiple applications
-    // const existingApplication = await Application.findOne({ student: req.user.id });
-    // if (existingApplication) {
-    //   return res.status(400).json({ msg: 'You have already submitted an application' });
-    // }
+    const { courses, department, ...commonData } = req.body;
+    const studentId = req.user.id;
 
-    const applicationData = { ...req.body, student: req.user.id };
+    // Check if student has any active (pending/accepted) applications in a different department
+    const existingActiveApp = await Application.findOne({
+      student: studentId,
+      status: { $ne: 'rejected' }
+    }).populate('department');
+
+    if (existingActiveApp) {
+      if (existingActiveApp.department._id.toString() !== department) {
+        return res.status(400).json({ 
+          msg: `You have an active application in the ${existingActiveApp.department.name} department. You cannot apply to other departments.` 
+        });
+      }
+    }
+
+    // If courses is an array, create an application for each course
+    if (Array.isArray(courses) && courses.length > 0) {
+      const applicationPromises = courses.map(courseId => {
+        const applicationData = {
+          ...commonData,
+          department,
+          student: studentId,
+          courses: [courseId] // Store as single-item array to match schema
+        };
+        return new Application(applicationData).save();
+      });
+
+      const createdApplications = await Promise.all(applicationPromises);
+      return res.status(201).json({ success: true, data: createdApplications });
+    }
+
+    // Fallback for single course or no course (though validation should catch no course)
+    const applicationData = { ...req.body, student: studentId };
     const application = new Application(applicationData);
     await application.save();
 

@@ -255,7 +255,7 @@ const Dashboard = () => {
                           {record.gpa.toFixed(2)}
                         </span>
                         <span className="text-xs text-gray-400 mt-2">
-                          {typeof record.department === 'object' ? record.department.code : 'DEPT'}
+                          {record.department && typeof record.department === 'object' ? record.department.code : 'DEPT'}
                         </span>
                       </div>
                     ))}
@@ -371,10 +371,12 @@ const Dashboard = () => {
                             <div className="flex justify-between items-start mb-2">
                                 <div>
                                     <p className="text-gray-900 font-medium">
-                                        {typeof app.department === 'object' ? app.department.name : 'Department'}
+                                        {app.department && typeof app.department === 'object' ? app.department.name : 'Unknown Department'}
                                     </p>
                                     <p className="text-xs text-gray-500">
-                                        {app.courses?.length || 0} course(s) selected
+                                        {app.courses && app.courses.length > 0 
+                                            ? app.courses.map((c: any) => typeof c === 'object' ? c.title : 'Course').join(', ')
+                                            : 'No courses selected'}
                                     </p>
                                 </div>
                                 <span className={`text-xs font-semibold px-2 py-1 rounded ${

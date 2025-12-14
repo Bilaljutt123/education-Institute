@@ -1,6 +1,7 @@
-// controllers/departmentController.js
-
 import Department from '../models/Department.js';
+import Course from '../models/Course.js';
+import Application from '../models/Application.js';
+import GPA from '../models/GPA.js';
 
 // @desc    Get all departments
 // @route   GET /api/departments
@@ -101,9 +102,16 @@ export const deleteDepartment = async (req, res) => {
       return res.status(404).json({ msg: 'Department not found' });
     }
 
+    // Cascade delete: Remove all related data
+    await Promise.all([
+      Course.deleteMany({ department: req.params.id }),
+      Application.deleteMany({ department: req.params.id }),
+      GPA.deleteMany({ department: req.params.id })
+    ]);
+
     await Department.findByIdAndDelete(req.params.id);
 
-    res.json({ success: true, msg: 'Department removed' });
+    res.json({ success: true, msg: 'Department and all associated data removed' });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ msg: 'Server error' });

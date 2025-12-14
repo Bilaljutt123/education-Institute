@@ -21,6 +21,7 @@ import DepartmentList from './components/DepartmentList';
 import DepartmentDetail from './components/DepartmentDetail';
 import Blog from './components/Blog';
 import Services from './components/Services';
+import ManageGPA from './components/ManageGPA';
 
 function AppContent() {
   return (
@@ -48,6 +49,7 @@ function AppContent() {
             <Route path="/departments/:id" element={<DepartmentDetail />} />
             <Route path="/manage-departments" element={<ManageDepartments />} />
             <Route path="/create-department" element={<CreateDepartment />} />
+            <Route path="/manage-gpa" element={<ManageGPA />} />
           </Route>
         </Routes>
       </Layout>

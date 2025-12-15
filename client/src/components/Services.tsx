@@ -63,7 +63,7 @@ const Services = () => {
 
   const getCoursesByDepartment = (deptId: string) => {
     return courses.filter(course => {
-      const courseDeptId = typeof course.department === 'object' ? course.department._id : course.department;
+      const courseDeptId = (course.department && typeof course.department === 'object') ? course.department._id : course.department;
       return courseDeptId === deptId;
     });
   };

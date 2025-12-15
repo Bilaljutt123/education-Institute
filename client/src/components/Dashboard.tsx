@@ -26,7 +26,7 @@ const Dashboard = () => {
   myApplications.forEach(app => {
     if (app.status === 'accepted' && app.courses) {
       app.courses.forEach(c => {
-        enrolledCourseIds.push(typeof c === 'object' ? c._id : c);
+        enrolledCourseIds.push((c && typeof c === 'object') ? c._id : c);
       });
     }
   });
@@ -102,7 +102,7 @@ const Dashboard = () => {
       if (selectedDepartmentFilter !== 'all') {
         matchesDepartment = false;
         if (app.department) {
-          const deptId = typeof app.department === 'object' ? app.department._id : app.department;
+          const deptId = (app.department && typeof app.department === 'object') ? app.department._id : app.department;
           matchesDepartment = deptId === selectedDepartmentFilter;
         }
       }
@@ -375,7 +375,7 @@ const Dashboard = () => {
                                     </p>
                                     <p className="text-xs text-gray-500">
                                         {app.courses && app.courses.length > 0 
-                                            ? app.courses.map((c: any) => typeof c === 'object' ? c.title : 'Course').join(', ')
+                                            ? app.courses.map((c: any) => (c && typeof c === 'object') ? c.title : 'Course').join(', ')
                                             : 'No courses selected'}
                                     </p>
                                 </div>
@@ -561,7 +561,7 @@ const Dashboard = () => {
                         .filter(course => {
                           // Filter courses by selected department
                           if (selectedDepartmentFilter === 'all') return true;
-                          const courseDeptId = typeof course.department === 'object' ? course.department._id : course.department;
+                          const courseDeptId = (course.department && typeof course.department === 'object') ? course.department._id : course.department;
                           return courseDeptId === selectedDepartmentFilter;
                         })
                         .map(course => (

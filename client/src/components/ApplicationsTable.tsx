@@ -187,7 +187,7 @@ const ApplicationsTable = () => {
                       return acc;
                     }, {} as Record<string, { student: any, firstName: string, lastName: string, email: string, applications: ApplicationWithDetails[] }>)
                   ).map((studentGroup) => (
-                    <tr key={typeof studentGroup.student === 'object' ? studentGroup.student._id : Math.random()} className="hover:bg-gray-50 transition-colors">
+                    <tr key={studentGroup.student && typeof studentGroup.student === 'object' ? studentGroup.student._id : Math.random()} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 text-gray-900 font-medium">{studentGroup.firstName} {studentGroup.lastName}</td>
                       <td className="px-6 py-4 text-gray-600">{studentGroup.email}</td>
                       <td className="px-6 py-4">

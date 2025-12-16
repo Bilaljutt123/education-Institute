@@ -117,30 +117,8 @@ const ApplicationForm = () => {
         return;
       }
       try {
-        // Assuming getCourses supports filtering by department via query param
-        // If not, we might need to fetch all and filter client-side, but let's assume I fixed the backend API
-        // Actually, I did update the backend to support ?department=ID
-        // But getCourses in api.ts might not support passing params yet.
-        // I'll check api.ts later. For now, I'll use direct axios call or update api.ts
-        // Let's assume I'll update api.ts to accept params or just filter client side if needed.
-        // Wait, I can just use the api instance directly if needed.
-        // But let's try to use getCourses and filter client side if the API returns all.
-        // Actually, I updated the backend to filter.
-        // I need to make sure the frontend calls it with the param.
-        
-        // Let's manually construct the URL for now to be safe
-        // Or better, update getCourses in api.ts. 
-        // For this file, I'll use a direct fetch if getCourses doesn't support args.
-        // But let's assume I'll fix api.ts.
-        
-        // Temporary: fetch all and filter (safest if I forget to update api.ts)
-        const res = await getCourses(); 
-        const filtered = res.data.filter((c: any) => {
-            // Check if department is populated object or string ID
-            const deptId = typeof c.department === 'object' ? c.department._id : c.department;
-            return deptId === department;
-        });
-        setAvailableCourses(filtered);
+        const res = await getCourses({ department });
+        setAvailableCourses(res.data);
       } catch (err) {
         console.error('Could not fetch courses:', err);
       }

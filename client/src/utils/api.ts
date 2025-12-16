@@ -45,8 +45,8 @@ export const getMyApplications = async (): Promise<ApiResponse<Application[]>> =
   return response.data;
 };
 
-export const getCourses = async (): Promise<ApiResponse<Course[]>> => {
-  const response = await api.get<ApiResponse<Course[]>>('/courses');
+export const getCourses = async (params?: { department?: string }): Promise<ApiResponse<Course[]>> => {
+  const response = await api.get<ApiResponse<Course[]>>('/courses', { params });
   return response.data;
 };
 

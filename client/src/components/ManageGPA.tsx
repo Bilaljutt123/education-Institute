@@ -157,7 +157,7 @@ const ManageGPA = () => {
                     <div className="font-medium text-gray-900">{app.firstName} {app.lastName}</div>
                     <div className="text-sm text-gray-500 truncate">{app.email}</div>
                     <div className="text-xs text-gray-400 mt-1">
-                      {typeof app.department === 'object' ? app.department.name : 'Unknown Dept'}
+                      {(app.department && typeof app.department === 'object') ? app.department.name : 'Unknown Dept'}
                     </div>
                   </button>
                 ))
@@ -263,7 +263,7 @@ const ManageGPA = () => {
                             <tr key={record._id} className="hover:bg-gray-50">
                               <td className="px-4 py-3 text-gray-900 font-medium">Semester {record.semester}</td>
                               <td className="px-4 py-3 text-gray-600">
-                                {typeof record.department === 'object' ? record.department.name : 'Unknown'}
+                                {(record.department && typeof record.department === 'object') ? record.department.name : 'Unknown'}
                               </td>
                               <td className="px-4 py-3">
                                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${

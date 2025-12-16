@@ -114,6 +114,19 @@ export interface ApiResponse<T> {
   msg?: string;
 }
 
+// Type for Student Request
+export interface Request {
+  _id: string;
+  student: string | User;
+  type: 'Sick Leave' | 'Urgent Leave' | 'Complaint' | 'Other';
+  title: string;
+  description: string;
+  startDate?: string;
+  endDate?: string;
+  status: 'pending' | 'approved' | 'rejected';
+  createdAt: string;
+}
+
 // Type for GPA object
 export interface GPA {
   _id: string;

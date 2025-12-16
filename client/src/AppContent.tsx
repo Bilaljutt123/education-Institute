@@ -22,6 +22,7 @@ import DepartmentDetail from './components/DepartmentDetail';
 import Blog from './components/Blog';
 import Services from './components/Services';
 import ManageGPA from './components/ManageGPA';
+import ManageRequests from './components/ManageRequests';
 
 function AppContent() {
   return (
@@ -49,6 +50,7 @@ function AppContent() {
             <Route path="/departments/:id" element={<DepartmentDetail />} />
             <Route path="/manage-departments" element={<ManageDepartments />} />
             <Route path="/create-department" element={<CreateDepartment />} />
+            <Route path="/manage-requests" element={<ManageRequests />} />
             <Route path="/manage-gpa" element={<ManageGPA />} />
           </Route>
         </Routes>

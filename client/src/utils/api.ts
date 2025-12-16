@@ -119,5 +119,27 @@ export const getStudentGPA = async (studentId: string): Promise<ApiResponse<any[
   return response.data;
 };
 
+// --- REQUEST API FUNCTIONS ---
+
+export const createRequest = async (data: any): Promise<ApiResponse<any>> => {
+  const response = await api.post<ApiResponse<any>>('/requests', data);
+  return response.data;
+};
+
+export const getMyRequests = async (): Promise<ApiResponse<any[]>> => {
+  const response = await api.get<ApiResponse<any[]>>('/requests/my');
+  return response.data;
+};
+
+export const getAllRequests = async (): Promise<ApiResponse<any[]>> => {
+  const response = await api.get<ApiResponse<any[]>>('/requests');
+  return response.data;
+};
+
+export const updateRequestStatus = async (id: string, status: string): Promise<ApiResponse<any>> => {
+  const response = await api.put<ApiResponse<any>>(`/requests/${id}`, { status });
+  return response.data;
+};
+
 // Named export for axios instance
 export { api };

@@ -8,7 +8,9 @@ import userRoutes from './routes/user.js'; // <-- Import user routes
 import applicationRoutes from './routes/application.js';
 import courseRoutes from './routes/course.js';
 import departmentRoutes from './routes/department.js'; // <-- Import department routes
-import gpaRoutes from './routes/gpa.js'; // <-- Import GPA routes
+import gpaRoutes from './routes/gpa.js';
+import chatRoutes from './routes/chat.js';
+import requestRoutes from './routes/requests.js';
 
 
 dotenv.config();
@@ -23,7 +25,9 @@ app.use('/api/users', userRoutes); // <-- Mount user routes
 app.use('/api/applications', applicationRoutes); 
 app.use('/api/courses', courseRoutes);
 app.use('/api/departments', departmentRoutes); // <-- Mount department routes
-app.use('/api/gpa', gpaRoutes); // <-- Mount GPA routes
+app.use('/api/gpa', gpaRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/requests', requestRoutes);
 
 app.get('/', (req, res) => {
   res.send('API is running...');

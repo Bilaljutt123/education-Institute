@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import { getMyApplications, getCourses, getApplicationsWithDetails, getDepartments, getStudentGPA } from '@/utils/api';
+import StudentRequests from './StudentRequests';
+import { getMyApplications, getCourses, getApplicationsWithDetails, getDepartments, getStudentGPA, getAllRequests } from '@/utils/api';
 import type { Application, Course, ApplicationWithDetails, Department, GPA } from '@/types';
 import { BookOpen, GraduationCap, CheckCircle, Clock, XCircle, Calendar, User, FileText, Plus, Building2, TrendingUp, LayoutDashboard } from 'lucide-react';
 
@@ -19,6 +20,7 @@ const Dashboard = () => {
   const [selectedDateFilter, setSelectedDateFilter] = useState<string>('all');
   const [myGPA, setMyGPA] = useState<GPA[]>([]);
   const [activeView, setActiveView] = useState<'overview' | 'courses' | 'applications' | 'gpa'>('overview');
+  const [pendingRequestsCount, setPendingRequestsCount] = useState<number>(0);
 
   // Get enrolled courses (accepted applications) for students
   // Flatten the courses array from all accepted applications
@@ -65,16 +67,23 @@ const Dashboard = () => {
           } catch (err) {
             console.error('Error fetching GPA:', err);
           }
+
         } else if (user.role === 'admin') {
           try {
-            const [appsRes, coursesRes, deptsRes] = await Promise.all([
+            const [appsRes, coursesRes, deptsRes, requestsRes] = await Promise.all([
               getApplicationsWithDetails(),
               getCourses(),
-              getDepartments()
+              getDepartments(),
+              getAllRequests() // We need to fetch requests to count pending ones
             ]);
             setAdminApplications(appsRes.data);
             setCourses(coursesRes.data);
             setDepartments(deptsRes.data);
+            
+            // Count pending requests
+            const pendingReqs = (requestsRes as any).filter((r: any) => r.status === 'pending');
+            setPendingRequestsCount(pendingReqs.length);
+
           } catch (err) {
             console.error('Error fetching admin data:', err);
           } finally {
@@ -339,6 +348,17 @@ const Dashboard = () => {
                 </div>
               )}
 
+              {/* REQUESTS SECTION (Appeared in My Applications view for now, or separate) */}
+              {/* Let's add it to 'applications' view specifically for now or create new view if needed? 
+                  User asked for "student can write application for like sick leave...". 
+                  It makes sense to be near applications. */}
+              
+              {(activeView === 'overview' || activeView === 'applications') && (
+                 <div className="mb-8">
+                    <StudentRequests />
+                 </div>
+              )}
+
               {/* MY APPLICATIONS */}
               {(activeView === 'overview' || activeView === 'applications') && (
                 <div className="grid grid-cols-1 gap-6">
@@ -498,6 +518,27 @@ const Dashboard = () => {
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">Manage GPA</h3>
                   <p className="text-gray-600 text-sm">Assign and update student GPAs</p>
+                </div>
+              </Link>
+
+              <Link to="/manage-requests" className="group relative">
+                <div className="bg-white rounded border border-gray-200 p-6 hover:border-blue-400 hover:shadow-md transition-all h-full">
+                  
+                  {/* Pending Requests Badge */}
+                  {pendingRequestsCount > 0 && (
+                    <div className="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-red-600 border-4 border-white flex items-center justify-center shadow-md z-10">
+                      <span className="text-white font-bold text-sm">{pendingRequestsCount}</span>
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="p-3 rounded bg-blue-50">
+                      <Clock className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <span className="text-gray-400 group-hover:text-blue-600 transition-colors">→</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Student Requests</h3>
+                  <p className="text-gray-600 text-sm">Review leave requests & complaints</p>
                 </div>
               </Link>
 
